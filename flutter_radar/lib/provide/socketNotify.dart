@@ -269,7 +269,7 @@ class SocketNotifyProvide with ChangeNotifier{
     print('-----------version 1.2 新增输出内容');  
     print(warningList.length);
     for (Exhibits e in warningList) {
-      Pin p = new Pin(e.rfidId, new Offset(e.mobileLeft, e.mobileTop));
+      Pin p = new Pin(e.rfidId, new Offset(e.mobileLeft, e.mobileTop), false);
       p.exhibitionId = e.exhibitionId;
       pinList.list.add(p);
     }
@@ -348,7 +348,10 @@ class SocketNotifyProvide with ChangeNotifier{
       if(warningListByExhibition.length == 0) {
         warningListByRFID= [];
       }
+
+      createPinByWarningList(warningListByRFID);
       notifyListeners();
+
     }
 
   }

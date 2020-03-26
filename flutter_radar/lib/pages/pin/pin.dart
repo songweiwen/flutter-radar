@@ -51,7 +51,10 @@ class Pin extends Exhibits{ //修改 继承exhibits  能获取到网络上的xy�
   /// 触摸位置
   Rect touch;
 
-  Pin(this.pinId, this.location);
+  // 添加属性  是否特殊大头针 （临展主机）
+  final bool isHost;
+
+  Pin(this.pinId, this.location, this.isHost);
 
   @override
   bool operator ==(Object other) =>

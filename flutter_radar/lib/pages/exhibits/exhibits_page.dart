@@ -96,6 +96,15 @@ class ExhibitsPage extends StatelessWidget {
                       fontSize: ScreenUtil().setSp(34),
                       color: Colors.black
                   ),
+                ),
+
+                Text(
+                  '${list[index].exhibitsRecommend}',
+                  overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(34),
+                      color: Colors.black
+                  ),
                 )
               ],
           ),

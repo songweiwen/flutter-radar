@@ -6,9 +6,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radar/config/service_url.dart';
 import 'package:flutter_radar/model/exhibits_model.dart';
+import 'package:flutter_radar/model/host_model.dart';
 import 'package:flutter_radar/model/main_model.dart';
 import 'package:flutter_radar/pages/pin/map_view.dart';
 import 'package:flutter_radar/pages/pin/pin.dart';
+import 'package:flutter_radar/provide/hostList.dart';
 import 'package:flutter_radar/provide/mainPage.dart';
 import 'package:flutter_radar/provide/socketNotify.dart';
 import 'package:flutter_radar/routers/application.dart';
@@ -32,7 +34,12 @@ class ExhibitionDetailsPage extends StatelessWidget {
 
     final Widget _floatingActionButtonExtended = FloatingActionButton.extended(
       onPressed: () {
+
         Application.router.navigateTo(context, "/exhibits?id=${exhibition.exhibitionId}");
+        // //测试能不能拿到 host数据
+        // List<Host> warningList = Provide.value<HostListProvide>(context).hostList;
+        // print(warningList);
+
       },
       icon: Icon(Icons.announcement),
       label: Text('展品介绍'),
@@ -108,6 +115,10 @@ class ExhibitionDetailsPage extends StatelessWidget {
                   
                   // 看看能不能加成动态获取
                   rfidlist = Provide.value<SocketNotifyProvide>(context).warningListByExhibition;
+                  
+                  //增加内容 倒序输出数字
+                  ontapCount = rfidlist.length;
+
                   // _getrfidList(context);
                   return Container(
                     color: Colors.white,
@@ -162,7 +173,7 @@ class ExhibitionDetailsPage extends StatelessWidget {
                     )
                   ),
                   child: Center(
-                    child: Text('${index + 1 + ontapCount}'),
+                    child: Text('${ontapCount - index}'),
                   ),
                 ),
               ),
@@ -206,7 +217,7 @@ class ExhibitionDetailsPage extends StatelessWidget {
                       gravity: ToastGravity.CENTER,
                     );
                     // 执行方法  改写数据库
-                    ontapCount ++;
+                    ontapCount --;
                     
                     // 对本地持久化进行存储功能
                     _preferencesList(context,item);
@@ -229,6 +240,7 @@ class ExhibitionDetailsPage extends StatelessWidget {
     );
   }
 
+// 添加本地数据。  消除报警
   void _preferencesList(BuildContext context, Exhibits item) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -248,27 +260,9 @@ class ExhibitionDetailsPage extends StatelessWidget {
     sureWarningList.add(warningStr);
     // 本地持久化数据
     prefs.setStringList('SureWarningList', sureWarningList);
-
+    
     Provide.value<SocketNotifyProvide>(context).subtractWarningListByRFID(context, item);
-  }
-
-  void _deleteWarning(String exhibitsId, int rifd, String endTime) async {
-    var endtimstr = formatDate(DateTime.parse(endTime).add(new Duration(hours: 8)), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]);
-    var response = await Dio().post(servicePath['warningListByHour'],queryParameters:{'exhibitsId':exhibitsId,'rfid':rifd,'endTime':endtimstr});
-    var responseData = json.decode(response.toString());
-    if (responseData['status'] == 1) {
-      Fluttertoast.showToast(
-        msg: "该条报警确认成功！",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-      );
-    } else {
-      Fluttertoast.showToast(
-        msg: "该报警已被确认！",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-      );
-    }
+    Provide.value<SocketNotifyProvide>(context).selecPinByExhibition(item.exhibitionId);
   }
 
   Widget _titleContent(context, titleString, itemString) {
@@ -347,6 +341,11 @@ class _MakeMapPageState extends State<MakeMapPage> {
     return Provide<SocketNotifyProvide>(
       builder: (context ,child,val){
         PinList _pins = Provide.value<SocketNotifyProvide>(context).pinByExhibitionList;
+
+        //添加临展主机大头针标示
+          Pin p = new Pin(1, new Offset(1010, 990),true);
+          _pins.list.add(p);
+        
         return MapView(
           AssetImage(endImageStr),
           _pins,
@@ -374,11 +373,10 @@ class _MakeMapPageState extends State<MakeMapPage> {
           ///
           /// 4. 这里是添加两种Pin的图片
           AssetImage('images/hongdengyichang.png'),
-          AssetImage('images/hongdengyichang.png'),
+          AssetImage('images/landengzhengchang.png'),
         );
       },
     );
-    
     
   }
 }

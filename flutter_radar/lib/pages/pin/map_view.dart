@@ -135,14 +135,20 @@ class _MapViewState extends State<MapView> {
         newOffset.dx + nMapSize.width * 0.9 < 0 ||
         newOffset.dy + nMapSize.height * 0.9 < 0 ||
         // newOffset.dy > _iWindowsSize.height * 0.85) 
-        newOffset.dy > 200 * 0.85) 
-        return;
-    print(
+        newOffset.dy > 200 * 0.85) {
+          setState(() {
+            _offset = _iOffset;
+          });
+        }
+        // return;
+    else {
+      print(
         '_MapViewState._onScaleUpdate #$_iOffset> $newOffset] ${_iMapSize * newScale} $_iWindowsSize');
-    setState(() {
-      _scale = newScale;
-      _offset = newOffset;
-    });
+      setState(() {
+        _scale = newScale;
+        _offset = newOffset;
+      });
+    }
   }
 
   /// 图像缩放居中
@@ -209,7 +215,8 @@ class MapPinPainter extends CustomPainter {
       var nX = -p.location.dx + p.location.dx * scale;
       var nY = -p.location.dy + p.location.dy * scale;
       canvas.translate(nX, nY);
-      canvas.drawImage(pins.isFocus(p) ? redPin : bluePin,
+      // canvas.drawImage(pins.isFocus(p) ? redPin : bluePin,//是否焦点。  修改此段  
+      canvas.drawImage(p.isHost ? bluePin : redPin,
           p.location.translate(-pinWidth / 2, -pinHeight), paint);
       canvas.restore();
     }
@@ -218,5 +225,6 @@ class MapPinPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(MapPinPainter o) =>
-      o.uiMap != uiMap || o.offset != offset || pins.curFocus != pins.preFocus;
+      // o.uiMap != uiMap || o.offset != offset || pins.curFocus != pins.preFocus ;
+      true;
 }
