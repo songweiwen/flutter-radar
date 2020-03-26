@@ -95,7 +95,7 @@ class _MapViewState extends State<MapView> {
   @override
   Widget build(BuildContext context) => GestureDetector(
         child: CustomPaint(
-            child: Container(color: Colors.red),
+            child: Container(color: Colors.white),
             foregroundPainter: MapPinPainter(
               _map,
               widget.pins,
