@@ -11,6 +11,7 @@ class HostListProvide with ChangeNotifier {
 
   HostModel hostModel = new HostModel();
   List<Host> hostList = [];
+  List<Host> hostListByExhbition = [];
 
   getHostList() async {
     
@@ -68,7 +69,29 @@ class HostListProvide with ChangeNotifier {
     });
   }
 
+  // 根据假如来的场馆来筛选大头针
+  createPinsWithHostByExhibition(int exhibitionId) {
+    
+    String rec = exhibitionId == 8? '紫檀宫西厅':exhibitionId == 9? '紫檀宫中厅':'紫檀宫东厅';
+    hostListByExhbition.clear();
+
+    if (hostList.length != 0) {
+      
+      for (Host h in hostList) {
+        if (h.hostRecommend == rec) {
+          hostListByExhbition.add(h);
+        }
+      }
+      notifyListeners();
+    } 
+
+  }
+
 }
+
+
+
+
 
 
 class HostStateModel {

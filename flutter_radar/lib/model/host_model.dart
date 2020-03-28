@@ -37,6 +37,8 @@ class Host {
   int exhibitionId;
   String updateTime;
   String hostRecommend;
+  double mobileLeft;
+  double mobileTop;
 
   bool isWarning;
 
@@ -47,7 +49,10 @@ class Host {
       this.exhibitionId,
       this.updateTime,
       this.hostRecommend,
-      this.isWarning});
+      this.isWarning,
+      this.mobileLeft,
+      this.mobileTop
+      });
 
   Host.fromJson(Map<String, dynamic> json) {
     hostId = json['hostId'];
@@ -56,6 +61,8 @@ class Host {
     exhibitionId = json['exhibitionId'];
     updateTime = json['updateTime'];
     hostRecommend = json['hostRecommend'];
+    mobileLeft = json['mobileLeft'];
+    mobileTop = json['mobileTop'];
   }
 
   Map<String, dynamic> toJson() {
@@ -66,6 +73,8 @@ class Host {
     data['exhibitionId'] = this.exhibitionId;
     data['updateTime'] = this.updateTime;
     data['hostRecommend'] = this.hostRecommend;
+    data['mobileLeft'] = this.mobileLeft;
+    data['mobileTop'] = this.mobileTop;
     return data;
   }
 }

@@ -1,10 +1,7 @@
-import 'dart:convert';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:date_format/date_format.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_radar/config/service_url.dart';
 import 'package:flutter_radar/model/exhibits_model.dart';
 import 'package:flutter_radar/model/host_model.dart';
 import 'package:flutter_radar/model/main_model.dart';
@@ -27,18 +24,16 @@ class ExhibitionDetailsPage extends StatelessWidget {
 
   int ontapCount = 0;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
 
     Exhibition exhibition = Provide.value<MainPageProvide>(context).exhibition;
     List<Exhibits> rfidlist=[];
+    Provide.value<HostListProvide>(context).createPinsWithHostByExhibition(exhibitionId);
 
     final Widget _floatingActionButtonExtended = FloatingActionButton.extended(
       onPressed: () {
 
         Application.router.navigateTo(context, "/exhibits?id=${exhibition.exhibitionId}");
-        // //测试能不能拿到 host数据
-        // List<Host> warningList = Provide.value<HostListProvide>(context).hostList;
-        // print(warningList);
 
       },
       icon: Icon(Icons.announcement),
@@ -322,17 +317,7 @@ class _MakeMapPageState extends State<MakeMapPage> {
 
   @override
   void initState() {
-
-    // Pin p = new Pin(1, new Offset(1010, 990));
-    // Pin p1 = new Pin(2, new Offset(800, 1000));
-    // Pin p2 = new Pin(3, new Offset(700, 1300));
-    // _pins = new PinList();
-    // // _pins.list.add(p2);
-    // // _pins.list.add(p1);
-    // _pins.list.add(p);
-
     endImageStr = exhibitionId == 8 ? 'images/zitangongxiting.jpg':exhibitionId == 9 ? 'images/zitangongzhongting.jpg':'images/zitangongdongting.jpg';
-
     super.initState();
   }
 
@@ -340,12 +325,16 @@ class _MakeMapPageState extends State<MakeMapPage> {
   Widget build(BuildContext context) {
     return Provide<SocketNotifyProvide>(
       builder: (context ,child,val){
-        PinList _pins = Provide.value<SocketNotifyProvide>(context).pinByExhibitionList;
-
-        //添加临展主机大头针标示
-          Pin p = new Pin(1, new Offset(1010, 990),true);
-          _pins.list.add(p);
         
+        List<Host> warningList = Provide.value<HostListProvide>(context).hostListByExhbition;
+        PinList _pins = Provide.value<SocketNotifyProvide>(context).pinByExhibitionList;
+        //加入主机pin
+        for (Host h in warningList) {
+          //添加临展主机大头针标示
+          Pin p = new Pin(h.hostId, new Offset(h.mobileLeft, h.mobileTop),true);
+          _pins.list.add(p);
+        }
+
         return MapView(
           AssetImage(endImageStr),
           _pins,
@@ -358,12 +347,12 @@ class _MakeMapPageState extends State<MakeMapPage> {
             ///
             /// 3. 这里展示自定义的Widget
             if (p != null)
-              BotToast.showAttachedWidget(
+            BotToast.showAttachedWidget(
                 // 3.1 这个表示弹出的起泡相对于点击的位置进行一定偏移
                 target: pos.translate(100, 50),
                 attachedBuilder: (onCancel) => Material(
                   child: Padding(
-                      child: Text("点击了图钉:$p"), padding: EdgeInsets.all(10)),
+                      child: Text(p.isHost? '这是临展主机${p.pinId}':'这是报警标签'), padding: EdgeInsets.all(10)),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
                 ),

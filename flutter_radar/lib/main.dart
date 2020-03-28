@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class MyApp extends StatelessWidget {
     const Locale('en', 'US'),
     const Locale('zh', 'CH'),
   ];
-
+     
   @override
   Widget build(BuildContext context) {
 
@@ -66,8 +67,9 @@ class MyApp extends StatelessWidget {
     Routes.configureRoutes(router);
     Application.router = router;
     
-    return ConnectivityAppWrapper(
+    return BotToastInit(child: ConnectivityAppWrapper(
       app: MaterialApp(
+        navigatorObservers: [BotToastNavigatorObserver()],
         title:'外借临展文物防护系统',
         onGenerateRoute: Application.router.generator, // 配置路由
         debugShowCheckedModeBanner: false,
@@ -87,6 +89,6 @@ class MyApp extends StatelessWidget {
         ],
         supportedLocales: Platform.isIOS ? ios : an,
       ),
-    );
+    ),);
   }
 }
