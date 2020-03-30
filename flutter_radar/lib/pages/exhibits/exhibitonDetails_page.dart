@@ -115,11 +115,7 @@ class ExhibitionDetailsPage extends StatelessWidget {
                   ontapCount = rfidlist.length;
 
                   // _getrfidList(context);
-                  return Container(
-                    color: Colors.white,
-                    child: Stack(
-                      children: <Widget>[
-                        Provide<SocketNotifyProvide>(
+                  return Provide<SocketNotifyProvide>(
                           builder: (context,child,val){
                             rfidlist = Provide.value<SocketNotifyProvide>(context).warningListByExhibition;
                             return ListView.builder(
@@ -129,10 +125,7 @@ class ExhibitionDetailsPage extends StatelessWidget {
                               },
                             );
                           },
-                        ),
-                      ],
-                    ),
-                  );
+                        );
                 } else {
                   return Text('无新增报警');
                 }
