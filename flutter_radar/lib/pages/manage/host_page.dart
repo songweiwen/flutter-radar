@@ -6,6 +6,8 @@ import 'package:flutter_radar/provide/hostList.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
 
+import '../../routers/application.dart';
+
 class HostPage extends StatelessWidget {
 
   @override
@@ -82,6 +84,7 @@ class HostPage extends StatelessWidget {
       child:Stack(
         children: <Widget>[
 
+          // 临展主机状态显示位
           Padding(
             padding: EdgeInsets.only( left: ScreenUtil().setWidth(app_width - 300),top: ScreenUtil().setHeight(20)),
             child: MaterialButton(
@@ -112,6 +115,18 @@ class HostPage extends StatelessWidget {
               },
               child: Text(item.isWarning?'故障':'正常'),
               color:  item.isWarning? Colors.red:Colors.lightGreen,
+            ),
+          ),
+
+          // 临展主机设置按钮
+          Padding(
+            padding: EdgeInsets.only( left: ScreenUtil().setWidth(app_width - 300),top: ScreenUtil().setHeight(120)),
+            child: MaterialButton(
+              onPressed: (){
+                 Application.router.navigateTo(context, "/sethostpage?id=${item.hostId}");
+              },
+              color: Colors.purple,
+              child: Text('参数'),
             ),
           ),
 

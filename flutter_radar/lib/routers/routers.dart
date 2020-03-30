@@ -2,6 +2,8 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radar/routers/router_handler.dart';
 
+import 'router_handler.dart';
+
 class Routes {
   static String root = '/';
   static String indexPage = '/index';
@@ -14,6 +16,7 @@ class Routes {
   static String exhibitionDetailsPage = '/exhibitiondetailspage';
   static String exhibitionRecommdPage = '/exhibitionrecommdpage';
   static String hostPage = '/hostpage';
+  static String sethostPage = '/sethostpage';
   static void configureRoutes(Router router) {
     router.notFoundHandler = new Handler(
       handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -31,5 +34,6 @@ class Routes {
     router.define(exhibitionDetailsPage,handler: exhibitionDetailsPageHandler);
     router.define(exhibitionRecommdPage,handler: exhibitionRecommdPageHandler);
     router.define(hostPage,handler:hostPageHandler);
+    router.define(sethostPage, handler: setHostPageHandler);
   }
 }

@@ -355,7 +355,7 @@ class _MakeMapPageState extends State<MakeMapPage> {
           ///
           /// 4. 这里是添加两种Pin的图片
           AssetImage('images/hongdengyichang.png'),
-          AssetImage('images/landengzhengchang.png'),
+          AssetImage('images/landengone.png'),
         );
       },
     );

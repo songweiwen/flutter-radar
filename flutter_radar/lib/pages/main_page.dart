@@ -27,8 +27,8 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   
-  
   String userName = '';
+  var networkManager;
 
   //极光推送
   final JPush jpush = new JPush();
@@ -42,6 +42,19 @@ class _MainPageState extends State<MainPage> {
     if (Platform.isIOS) {
       jpush.setBadge(0);
     }
+
+    // 检查用户是否登陆过。 
+    SharedPreferences.getInstance().then((val){
+      if(val.getString('userName')!=null) {
+        this.initSocket();
+      } else {
+        Fluttertoast.showToast(
+          msg: "请先登陆账号以连接通讯服务器。",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+        );
+      }
+    });
   }
 
   //极光推送
@@ -159,165 +172,214 @@ class _MainPageState extends State<MainPage> {
      prefs.setString('jpushId', rid);
   }
 
+  //定时器同步锁
+  bool timerlock = true;
+
   @override
   Widget build(BuildContext context) {
     // 设置自动布局 
     ScreenUtil.instance = ScreenUtil(width: app_width, height: app_height)..init(context);
 
-    return Scaffold(
-      body: FutureBuilder(
-        future: _getMainPageInfo(context),
-        builder: (context, snapshot){
-          if (snapshot.hasData != null) {
-            List<String> swiperDataList = Provide.value<MainPageProvide>(context).swiperDataList;
-            if (swiperDataList.length != 0) {
-              return Container(
-                width: ScreenUtil().setWidth(app_width),
-                // 底板 青花瓷底图
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("images/bg1.jpg"),
-                    fit: BoxFit.fill,
-                  )
-                ),
-
-                // 内容组件
-                child: Stack(
-                  children: <Widget>[
-                    
-                    Positioned(right: 0, left: 0, top: 0, bottom: 0,
-                      child: Column(
-                        children: <Widget>[
-                          //app 标题
-                          AppTitle(),
-                          //app 宫标
-                          Padding(
-                            child: Image(
-                              image: AssetImage('images/gongbiao.png'),
-                              fit:BoxFit.fill,
-                              height: ScreenUtil().setHeight(455),
-                              width: ScreenUtil().setWidth(356),
-                            ),
-                            padding: new EdgeInsets.only(top: ScreenUtil().setHeight(160)),
-                          ),
-                          //轮播图组件
-                          SwiperDiy(swiperDataList: swiperDataList,userName: userName,),
-                          ],
-                      ),
+    return Stack(
+      children: <Widget>[
+        //布局页面主体
+        Scaffold(
+          body: FutureBuilder(
+            future: _getMainPageInfo(context),
+            builder: (context, snapshot){
+              if (snapshot.hasData != null) {
+                List<String> swiperDataList = Provide.value<MainPageProvide>(context).swiperDataList;
+                if (swiperDataList.length != 0) {
+                  return Container(
+                    width: ScreenUtil().setWidth(app_width),
+                    // 底板 青花瓷底图
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("images/bg1.jpg"),
+                        fit: BoxFit.fill,
+                      )
                     ),
 
-                    //登陆状态按钮
-                    Positioned(left: 10, top: 35,
-                      width: ScreenUtil().setWidth(500),
-                      height: ScreenUtil().setHeight(60),
-                      child: FutureBuilder(
-                        future: _checkUserLoginStatus(context),
-                        builder: (context,snapshot){
-                            if (userName != '0') {
+                    // 内容组件
+                    child: Stack(
+                      children: <Widget>[
+                        
+                        Positioned(right: 0, left: 0, top: 0, bottom: 0,
+                          child: Column(
+                            children: <Widget>[
+                              //app 标题
+                              AppTitle(),
+                              //app 宫标
+                              Padding(
+                                child: Image(
+                                  image: AssetImage('images/gongbiao.png'),
+                                  fit:BoxFit.fill,
+                                  height: ScreenUtil().setHeight(455),
+                                  width: ScreenUtil().setWidth(356),
+                                ),
+                                padding: new EdgeInsets.only(top: ScreenUtil().setHeight(160)),
+                              ),
+                              //轮播图组件
+                              SwiperDiy(swiperDataList: swiperDataList,userName: userName,),
+                              ],
+                          ),
+                        ),
 
-                              return Row(
-                                children: <Widget>[
-                                  // SocketManager(context),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 10),
-                                    child: Text('欢迎：${userName}'),
-                                  ),
-                                  MaterialButton(
-                                    color: Colors.red,
-                                    child: Text(
-                                      '注销',
-                                      style: TextStyle(
-                                        fontSize: ScreenUtil().setSp(20),
-                                        color: Colors.white
+                        //登陆状态按钮
+                        Positioned(left: 10, top: 35,
+                          width: ScreenUtil().setWidth(500),
+                          height: ScreenUtil().setHeight(60),
+                          child: FutureBuilder(
+                            future: _checkUserLoginStatus(context),
+                            builder: (context,snapshot){
+                                if (userName != '0') {
+
+                                  return Row(
+                                    children: <Widget>[
+                                      // SocketManager(context),
+                                      Padding(
+                                        padding: EdgeInsets.only(right: 10),
+                                        child: Text('欢迎：${userName}'),
                                       ),
-                                    ),
-                                    minWidth: ScreenUtil().setWidth(80),
-                                    onPressed: (){
-                                      showDialog<Null>(
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (BuildContext context) {
-                                              return new AlertDialog(
-                                                  title: new Text('提示'),
-                                                  content: new SingleChildScrollView(
-                                                      child: new ListBody(
-                                                          children: <Widget>[
-                                                              new Text('是否确认注销账号？'),
-                                                              new Text('注销账号将无法使用本App的基本功能。'),
-                                                          ],
-                                                      ),
-                                                  ),
-                                                  actions: <Widget>[
-                                                      new FlatButton(
-                                                          child: new Text(
-                                                            '确定',
-                                                            style: TextStyle(
-                                                              color: Colors.red
-                                                            ),
+                                      MaterialButton(
+                                        color: Colors.red,
+                                        child: Text(
+                                          '注销',
+                                          style: TextStyle(
+                                            fontSize: ScreenUtil().setSp(20),
+                                            color: Colors.white
+                                          ),
+                                        ),
+                                        minWidth: ScreenUtil().setWidth(80),
+                                        onPressed: (){
+                                          showDialog<Null>(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (BuildContext context) {
+                                                  return new AlertDialog(
+                                                      title: new Text('提示'),
+                                                      content: new SingleChildScrollView(
+                                                          child: new ListBody(
+                                                              children: <Widget>[
+                                                                  new Text('是否确认注销账号？'),
+                                                                  new Text('注销账号将无法使用本App的基本功能。'),
+                                                              ],
                                                           ),
-                                                          onPressed: () {
-                                                              // 删除所有本地化配置
-                                                              _clear();
-                                                              // 退出sokcet服务器
-                                                              // 退出极光推送
-                                                              Navigator.of(context).pop();
-                                                          },
                                                       ),
-                                                      new FlatButton(
-                                                          child: new Text('取消'),
-                                                          onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                          },
-                                                      ),
-                                                  ],
-                                              );
-                                          },
-                                      ).then((val) {
-                                          print(val);
-                                      });
-                                    },
-                                  )
-                                ],
-                              );
-                            } else {
-                              return Row(
-                                children: <Widget>[
-                                  MaterialButton(
-                                    color: Colors.lightBlue,
-                                    child: Text(
-                                      '登录',
-                                      style: TextStyle(
-                                        fontSize: ScreenUtil().setSp(20),
-                                        color: Colors.white
+                                                      actions: <Widget>[
+                                                          new FlatButton(
+                                                              child: new Text(
+                                                                '确定',
+                                                                style: TextStyle(
+                                                                  color: Colors.red
+                                                                ),
+                                                              ),
+                                                              onPressed: () {
+                                                                  // 删除所有本地化配置
+                                                                  _clear();
+                                                                  // 退出sokcet服务器
+                                                                  // 退出极光推送
+                                                                  Navigator.of(context).pop();
+                                                              },
+                                                          ),
+                                                          new FlatButton(
+                                                              child: new Text('取消'),
+                                                              onPressed: () {
+                                                                  Navigator.of(context).pop();
+                                                              },
+                                                          ),
+                                                      ],
+                                                  );
+                                              },
+                                          ).then((val) {
+                                              print(val);
+                                          });
+                                        },
+                                      )
+                                    ],
+                                  );
+                                } else {
+                                  return Row(
+                                    children: <Widget>[
+                                      MaterialButton(
+                                        color: Colors.lightBlue,
+                                        child: Text(
+                                          '登录',
+                                          style: TextStyle(
+                                            fontSize: ScreenUtil().setSp(20),
+                                            color: Colors.white
+                                          ),
+                                        ),
+                                        minWidth: ScreenUtil().setWidth(80),
+                                        onPressed: (){
+                                          Application.router.navigateTo(context, "/login");
+                                        },
                                       ),
-                                    ),
-                                    minWidth: ScreenUtil().setWidth(80),
-                                    onPressed: (){
-                                      Application.router.navigateTo(context, "/login");
-                                    },
-                                  ),
-                                ],
-                              );
-                            }
-                        },
-                      )
-                    )
-                  ],
-                ),
-              );
-            } else {
-              return Center(
-                child: Text('加载中'),
-              );
-            }
+                                    ],
+                                  );
+                                }
+                            },
+                          )
+                        )
+                      ],
+                    ),
+                  );
+                } else {
+                  return Center(
+                    child: Text('加载中'),
+                  );
+                }
 
-          } else {
-            return Center(
-              child: Text('加载中'),
-            );
-          }
-        },
-      )
+              } else {
+                return Center(
+                  child: Text('加载中'),
+                );
+              }
+            },
+          )
+        ),
+
+        //socket主体
+        Container(
+          child: Provide<SocketNotifyProvide>(
+            builder: (context,child,val){
+              int socketStatus = Provide.value<SocketNotifyProvide>(context).status;
+              switch (socketStatus) {
+                case 1:
+                  if (timerlock) {
+                        //每秒发一次心跳请求
+                    Timer.periodic(Duration(seconds: 30), (t){
+                      networkManager.sendHeart();
+                      new DateTime.now().millisecondsSinceEpoch;
+                    });
+                    timerlock=false;
+                  }
+                  break;
+                case 3:
+                  //通讯中断
+                  Timer.periodic(Duration(seconds: 5), (t){
+                      if (Provide.value<SocketNotifyProvide>(context).status == 3) {
+                        this.initSocket();
+                        networkManager.sendLogin();
+                      }
+                      new DateTime.now().millisecondsSinceEpoch;
+                    });
+                  
+                  // networkManager.doneHandler();
+                  break;
+                case 9:
+                  print('人工检测正在执行中！');
+                  networkManager.sendRGJC(Provide.value<SocketNotifyProvide>(context).sendBody);
+                  break;
+                default:
+              }
+
+              return Container();
+            },
+          ),
+        )
+
+      ],
     );
   }
 
@@ -348,7 +410,15 @@ class _MainPageState extends State<MainPage> {
     return 'end';
   }
 
-  
+  // 重新编写 socket模块
+  void initSocket() async{
+    networkManager = SocketNetWorkManager(socketUrl, 5230,context);
+    await networkManager.init();
+    if (networkManager !=null) {
+      //发送登陆请求
+      networkManager.sendLogin();
+    }
+  }
 }
 
 

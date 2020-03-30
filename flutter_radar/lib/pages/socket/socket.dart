@@ -332,7 +332,7 @@ class SocketNetWorkManager {
         try {
           socket.add(msgLogin);
         } catch (e) {
-
+          print('登录数据包发送失败。失败原因：${e}');
         }
       }
     } else {

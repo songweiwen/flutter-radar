@@ -10,6 +10,7 @@ import 'package:flutter_radar/pages/manage/history_page.dart';
 import 'package:flutter_radar/pages/manage/host_page.dart';
 import 'package:flutter_radar/pages/setting/aboutUs_page.dart';
 import 'package:flutter_radar/pages/setting/setPush_page.dart';
+import 'package:flutter_radar/pages/manage/setHost_page.dart';
 
 
 // 进入首页 handler
@@ -90,5 +91,14 @@ Handler exhibitionRecommdPageHandler = Handler(
 Handler hostPageHandler = Handler(
   handlerFunc: (BuildContext context, Map<String, List<String>> params) {
     return HostPage();
+  }
+);
+
+
+//进入 临展主机参数页面
+Handler setHostPageHandler = Handler(
+  handlerFunc: (BuildContext context, Map<String, List<String>> params){
+    int hostId = int.parse(params['id'] == null?'1':params['id'].first);
+    return SetHostPage(hostId);
   }
 );

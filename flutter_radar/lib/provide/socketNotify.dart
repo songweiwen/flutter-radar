@@ -46,7 +46,12 @@ class SocketNotifyProvide with ChangeNotifier{
     notifyListeners();
   }
 
-
+// 手机发送人工检测 告知socket发送指令
+  setSocketRGJCStatus(int statusId, String str) {
+    sendBody = str;
+    status = statusId;
+    notifyListeners();
+  }
 
 // 准备查检数据
   setJpushContentCheck(String content, BuildContext context, String timeStr) {
