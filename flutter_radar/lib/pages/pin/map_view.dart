@@ -131,11 +131,11 @@ class _MapViewState extends State<MapView> {
     final Offset newOffset = d.focalPoint - normalizedOffset * newScale;
     final Size nMapSize = _iMapSize * newScale;
     // 限制map不能移出屏幕
-    if (newOffset.dx > _iWindowsSize.width * 0.9 ||
-        newOffset.dx + nMapSize.width * 0.9 < 0 ||
-        newOffset.dy + nMapSize.height * 0.9 < 0 ||
+    if (newOffset.dx > nMapSize.width * 0.5 ||
+        newOffset.dx + nMapSize.width * 0.5 < 0 ||
+        newOffset.dy + nMapSize.height * 0.5 < 0 ||
         // newOffset.dy > _iWindowsSize.height * 0.85) 
-        newOffset.dy > 200 * 0.85) {
+        newOffset.dy > _iWindowsSize.width * 0.5) {
           setState(() {
             _offset = _iOffset;
           });
