@@ -369,7 +369,7 @@ class _MainPageState extends State<MainPage> {
                   break;
                 case 9:
                   print('人工检测正在执行中！');
-                  networkManager.sendRGJC(Provide.value<SocketNotifyProvide>(context).sendBody);
+                  networkManager.sendReadHost(Provide.value<SocketNotifyProvide>(context).sendBody);
                   break;
                 default:
               }

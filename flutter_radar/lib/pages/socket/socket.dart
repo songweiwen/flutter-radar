@@ -194,6 +194,12 @@ class SocketNetWorkManager {
                   //处理完成当前指令
                   cacheDataInt = cacheDataInt.sublist(headerByteLen+ msgLen + crcByteLen + trailByteLen,cacheDataInt.length);
                   break;
+
+                case 0x15:
+                // 暂时对 回复数据做的处理
+                  
+                  cacheDataInt.clear();
+                  break;
                 default:
               }
               
@@ -260,7 +266,7 @@ class SocketNetWorkManager {
         //准备crc校验
         String crcString = Hex.encode(crc);
         
-        for (var i = 0; i  < 4 - crcString.length; i++) {
+        for (var i = crcString.length; i  < 4 ; i++) {
             crcString =  '0'+crcString;
         }
 
@@ -313,7 +319,7 @@ class SocketNetWorkManager {
         int crc = Crc16.calcCrc16(crcbuffer,crcbuffer.length);
         //准备crc校验
         String crcString = Hex.encode(crc);
-        for (var i = 0; i  < 4 - crcString.length; i++) {
+        for (var i = crcString.length; i  < 4 ; i++) {
             crcString =  '0'+crcString;
         }
         
@@ -347,9 +353,15 @@ class SocketNetWorkManager {
 
 // 手机发送人工检测
    void sendRGJC(String str) async{
+
     Uint8List msgLogin;
     List<int> buffer = [0x28,0x97];
     List<int> body_buffer = [0x00, 0x0D, 0x03, 0x01, 0x06]; 
+
+    for (var i = str.length; i < 4; i++) {
+      str = '0'+ str;
+    }
+    
     //拼接临展主机id号
     for (int i = 0; i < str.length; i+=2) {
           body_buffer.add(_hexToInt(str.substring(i,i+2)));
@@ -368,7 +380,7 @@ class SocketNetWorkManager {
         int crc = Crc16.calcCrc16(crcbuffer,crcbuffer.length);
         //准备crc校验
         String crcString = Hex.encode(crc);
-        for (var i = 0; i  < 4 - crcString.length; i++) {
+        for (var i = crcString.length; i  < 4 ; i++) {
             crcString =  '0'+crcString;
         }
         
@@ -402,6 +414,69 @@ class SocketNetWorkManager {
   }
 
  
+// 手机读取临展主机参数
+  void sendReadHost(String str) async {
+
+    Uint8List msgLogin;
+    List<int> buffer = [0x28,0x97];
+    List<int> body_buffer = [0x00, 0x0D, 0x03, 0x01, 0x11]; 
+
+    for (var i = str.length; i < 4; i++) {
+      str = '0'+ str;
+    }
+    
+    //拼接临展主机id号
+    for (int i = 0; i < str.length; i+=2) {
+          body_buffer.add(_hexToInt(str.substring(i,i+2)));
+    }
+    // body_buffer.add(_hexToInt(str));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('userName') !=null) {
+      
+      String phoneNumber = prefs.getString('userName') + '0';// 后面补0
+      if (phoneNumber.length == 12) {
+        for (int i = 0; i < phoneNumber.length; i+=2) {
+          body_buffer.add(_hexToInt(phoneNumber.substring(i,i+2)));
+        }
+
+        Uint8List crcbuffer = Uint8List.fromList(body_buffer);
+        int crc = Crc16.calcCrc16(crcbuffer,crcbuffer.length);
+        //准备crc校验
+        String crcString = Hex.encode(crc);
+        for (var i = crcString.length; i  < 4 ; i++) {
+            crcString =  '0'+crcString;
+        }
+        
+        if (crcString.length == 4) {
+          for (int i = 0; i < crcString.length; i+=2) {
+            body_buffer.add(_hexToInt(crcString.substring(i,i+2)));
+          }
+        }
+        //数据拼接完毕
+        buffer.addAll(body_buffer);
+        buffer.add(0x28);
+        buffer.add(0x98);//拼接帧尾
+        msgLogin = Uint8List.fromList(buffer);
+        // var msg = buffer as Uint8List;
+        //给服务器发消息
+        try {
+          socket.add(msgLogin);
+          print('读取临展主机${str}已经发送！');
+        } catch (e) {
+          print('读取临展主机失败！！！失败原因：${e}');
+        }
+      }
+    } else {
+      //提示用户登陆
+        Fluttertoast.showToast(
+          msg: "请登陆账号以连接Tcp服务器！",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+        );
+    }
+
+  }
+
   void errorHandler(error, StackTrace trace){
     print("捕获socket异常信息：error=$error，trace=${trace.toString()}");
     socket.close();

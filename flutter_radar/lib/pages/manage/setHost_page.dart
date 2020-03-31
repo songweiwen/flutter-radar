@@ -28,8 +28,6 @@ class SetHostPage extends StatelessWidget {
       ),
     );
   }
+ 
 
-  void _initDataBase(BuildContext context) {
-    
-  }
 }
