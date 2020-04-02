@@ -205,9 +205,13 @@ class SocketNetWorkManager {
                   cacheDataInt.clear();
                   break;
                 
-                case 12:
+                case 0x12:
                   print('参数设置成功回执！');
-                  // networkManager.sendSetHost(Provide.value<SocketNotifyProvide>(context).sendBody);
+                  Fluttertoast.showToast(
+                    msg: "参数设置成功！",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                  );
                   cacheDataInt.clear();
                   break;
                 default:
