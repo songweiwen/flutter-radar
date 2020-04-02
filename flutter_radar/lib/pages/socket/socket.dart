@@ -567,10 +567,10 @@ class SocketNetWorkManager {
  
   void doneHandler(){
     socket.destroy();
-    Provide.value<SocketNotifyProvide>(context).setSocketStatus(3,"");
-    //断开链接 暂时处理方法  重连
-    init();
-    sendLogin();
+    // Provide.value<SocketNotifyProvide>(context).setSocketStatus(3,"");
+    // //断开链接 暂时处理方法  重连
+    // init();
+    // sendLogin();
     print("socket关闭处理");
   }
 

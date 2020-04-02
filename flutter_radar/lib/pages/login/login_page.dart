@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radar/config/service_url.dart';
+import 'package:flutter_radar/provide/socketNotify.dart';
 import 'package:flutter_radar/service/service_method.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provide/provide.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -51,7 +53,6 @@ class _LoginPageState extends State<LoginPage> {
     if(loginForm.validate()){
       loginForm.save();
       print('userName: ' + userName + ' password: ' + password);
-      
       var response = await Dio().post(servicePath['loginPage'],queryParameters:{'username':userName,'password':password,'jpushId':jpushId});
       var responseData = json.decode(response.toString());
       if (responseData['status'] == 1) {
@@ -64,9 +65,12 @@ class _LoginPageState extends State<LoginPage> {
         // 本地持久化数据
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('userName', userName);
+
+        // 登陆成功后需要对socket进行连接处理
+        Provide.value<SocketNotifyProvide>(context).setSocketStatus(3, '');
+
         Navigator.pop(context);
 
-        
         
       } else {
         Fluttertoast.showToast(

@@ -275,6 +275,8 @@ class _MainPageState extends State<MainPage> {
                                                                 ),
                                                               ),
                                                               onPressed: () {
+                                                                //发送关闭socket处理
+                                                                Provide.value<SocketNotifyProvide>(context).setSocketStatus(99,"");
                                                                   // 删除所有本地化配置
                                                                   _clear();
                                                                   // 退出sokcet服务器
@@ -341,7 +343,7 @@ class _MainPageState extends State<MainPage> {
 
         //socket主体
         Container(
-          child: Provide<SocketNotifyProvide>(
+          child:Provide<SocketNotifyProvide>(
             builder: (context,child,val){
               int socketStatus = Provide.value<SocketNotifyProvide>(context).status;
               switch (socketStatus) {
@@ -375,6 +377,11 @@ class _MainPageState extends State<MainPage> {
                 case 10:
                   print('设置参数正在执行中！');
                   networkManager.sendSetHost(Provide.value<SocketNotifyProvide>(context).sendBody);
+                  break;
+                // 退出登陆之后要将socket挂起
+                case 99:
+                  print('用户退出登陆');
+                  networkManager.doneHandler();
                   break;
                 default:
               }
