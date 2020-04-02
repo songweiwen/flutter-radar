@@ -174,6 +174,7 @@ class SocketNetWorkManager {
                   cacheDataInt.clear();
                   break;
                 case 0x10: // 服务器心跳应答
+                  print('收到服务器心跳的应答！');
                   Provide.value<SocketNotifyProvide>(context).checkHeartBest();
                   //处理完成当前指令
                   // cacheDataInt = cacheDataInt.sublist(headerByteLen+ msgLen + crcByteLen + trailByteLen,cacheDataInt.length);
@@ -197,6 +198,7 @@ class SocketNetWorkManager {
 
                 case 0x15:
                 // 暂时对 回复数据做的处理
+                  print('读取参数成功回执！');
                   int cardLength = Hex.decode(Hex.encode(cacheDataInt[2]) + Hex.encode(cacheDataInt[3]));
                   List<int> cardBuffer = cacheDataInt.sublist(2, 2 + cardLength);
                   Provide.value<SocketNotifyProvide>(context).setCheckReadHostParameter(cardBuffer, context,'读取参数');

@@ -32,10 +32,10 @@ class SocketNotifyProvide with ChangeNotifier{
   PinList pinByExhibitionList = PinList();
 
   // 临展主机目前可设置的参数
-  int hostWarningCount;
-  int hostWarningTotalCount;
-  int rFIDWarningCount;
-  int rFIDWarningTotalCount;
+  int hostWarningCount = 0;
+  int hostWarningTotalCount = 0;
+  int rFIDWarningCount = 0;
+  int rFIDWarningTotalCount = 0;
 
   // 检查服务器心跳状态
   checkHeartBest() {
@@ -52,6 +52,14 @@ class SocketNotifyProvide with ChangeNotifier{
     notifyListeners();
   }
 
+
+  // 程序返回时  把已经滞空过的参数还原 
+  clearCount(){
+    hostWarningCount = 0;
+    hostWarningTotalCount = 0;
+    rFIDWarningCount = 0;
+    rFIDWarningTotalCount = 0;
+  }
 
 // 准备查检数据
   setJpushContentCheck(String content, BuildContext context, String timeStr) {

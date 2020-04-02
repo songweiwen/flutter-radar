@@ -45,6 +45,7 @@ class SetHostPage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: (){
+            Provide.value<SocketNotifyProvide>(context).clearCount();
             Navigator.pop(context);
           },
         ),

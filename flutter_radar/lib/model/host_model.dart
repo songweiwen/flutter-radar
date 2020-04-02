@@ -42,6 +42,13 @@ class Host {
 
   bool isWarning;
 
+  // 增加临展主机的4个参数
+  int hostWarningCount; // 报警次数
+  int hostWarningTotalCount; // 总报警次数
+  int rFIDWarningCount; // rfid 报警次数
+  int rFIDWarningTotalCount; // rfid 总报警次数
+
+
   Host(
       {this.hostId,
       this.hostState,
@@ -51,7 +58,13 @@ class Host {
       this.hostRecommend,
       this.isWarning,
       this.mobileLeft,
-      this.mobileTop
+      this.mobileTop,
+      
+      this.hostWarningCount,
+      this.hostWarningTotalCount,
+      this.rFIDWarningCount,
+      this.rFIDWarningTotalCount
+
       });
 
   Host.fromJson(Map<String, dynamic> json) {
