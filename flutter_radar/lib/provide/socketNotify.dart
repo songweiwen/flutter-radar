@@ -31,6 +31,12 @@ class SocketNotifyProvide with ChangeNotifier{
   PinList pinList = PinList();
   PinList pinByExhibitionList = PinList();
 
+  // 临展主机目前可设置的参数
+  int hostWarningCount;
+  int hostWarningTotalCount;
+  int rFIDWarningCount;
+  int rFIDWarningTotalCount;
+
   // 检查服务器心跳状态
   checkHeartBest() {
     server_HeartBest += 1;
@@ -46,12 +52,6 @@ class SocketNotifyProvide with ChangeNotifier{
     notifyListeners();
   }
 
-// 手机发送人工检测 告知socket发送指令
-  setSocketRGJCStatus(int statusId, String str) {
-    sendBody = str;
-    status = statusId;
-    notifyListeners();
-  }
 
 // 准备查检数据
   setJpushContentCheck(String content, BuildContext context, String timeStr) {
@@ -113,6 +113,19 @@ class SocketNotifyProvide with ChangeNotifier{
     }
   }
 
+
+    // 解析  读取参数 的主要属性
+  setCheckReadHostParameter(List<int>buffer, BuildContext context , String type) {
+    // 是否需要鉴定当前数据包发送给本手机号。=？
+    // 如果不需要鉴定直接对读取到的参数进行数值获取。
+
+    hostWarningCount = buffer[13];
+    hostWarningTotalCount = buffer[14];
+    rFIDWarningCount = buffer[15];
+    rFIDWarningTotalCount = buffer[16];
+
+    notifyListeners();
+  }
 
   // 解析报警主要属性
   setWarningSocketModel(List<int>buffer, BuildContext context , String warningTypes, String timeStr, bool isJpush) {

@@ -2,7 +2,7 @@
 const serviceUrl = 'https://www.dynercomm-radar.com:8443/';
 
 const socketUrl = 'www.dynercomm-radar.com';
-// const socketUrl = '192.168.100.110';
+// const socketUrl = '192.168.100.105';
 
 const servicePath ={
   'mainPage': serviceUrl+'main',//main 获取所有展馆信息

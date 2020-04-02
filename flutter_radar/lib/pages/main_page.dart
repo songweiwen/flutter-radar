@@ -368,8 +368,13 @@ class _MainPageState extends State<MainPage> {
                   // networkManager.doneHandler();
                   break;
                 case 9:
-                  print('人工检测正在执行中！');
+                  print('读取参数正在执行中！');
                   networkManager.sendReadHost(Provide.value<SocketNotifyProvide>(context).sendBody);
+                  break;
+
+                case 10:
+                  print('设置参数正在执行中！');
+                  networkManager.sendSetHost(Provide.value<SocketNotifyProvide>(context).sendBody);
                   break;
                 default:
               }
