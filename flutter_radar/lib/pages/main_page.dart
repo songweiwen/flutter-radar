@@ -375,7 +375,7 @@ class _MainPageState extends State<MainPage> {
                   break;
 
                 case 10:
-                  print('设置参数正在执行中！');
+                  print('设置参数正在执行中！'); 
                   networkManager.sendSetHost(Provide.value<SocketNotifyProvide>(context).sendBody);
                   break;
                 // 退出登陆之后要将socket挂起
@@ -385,6 +385,9 @@ class _MainPageState extends State<MainPage> {
                   break;
                 default:
               }
+
+              //每次执行完一部分代码之后给 socketstatus指令设置为0   以保证程序不会重复执行该段指令
+              Provide.value<SocketNotifyProvide>(context).setSocketClear();
 
               return Container();
             },

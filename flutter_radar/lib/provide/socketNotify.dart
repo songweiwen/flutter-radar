@@ -52,6 +52,11 @@ class SocketNotifyProvide with ChangeNotifier{
     notifyListeners();
   }
 
+  setSocketClear(){
+    sendBody = '';
+    status = 0;
+  }
+
 
   // 程序返回时  把已经滞空过的参数还原 
   clearCount(){
@@ -404,7 +409,6 @@ class SocketNotifyProvide with ChangeNotifier{
     return val;
   }
 }
-
 
 
 class RFIDSocketModel {
