@@ -117,20 +117,20 @@ class HostPage extends StatelessWidget {
               color:  item.isWarning? Colors.red:Colors.lightGreen,
             ),
           ),
-
+          
           // 临展主机设置按钮
-          Padding(
-            padding: EdgeInsets.only( left: ScreenUtil().setWidth(app_width - 300),top: ScreenUtil().setHeight(120)),
-            child: MaterialButton(
-              onPressed: (){
-                 Application.router.navigateTo(context, "/sethostpage?id=${item.hostId}");
-              },
-              color: Colors.purple,
-              child: Text('参数'),
+            Padding(
+              padding: EdgeInsets.only( left: ScreenUtil().setWidth(app_width - 300),top: ScreenUtil().setHeight(120)),
+              child: MaterialButton(
+                onPressed: (){
+                  Application.router.navigateTo(context, "/sethostpage?id=${item.hostId}");
+                },
+                color: Colors.purple,
+                child: Text('参数'),
+              ),
             ),
-          ),
 
-           Column(
+            Column(
             children: <Widget>[
 
               Padding(

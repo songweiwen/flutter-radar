@@ -86,10 +86,10 @@ class ExhibitionPage extends StatelessWidget {
               // Provide<SocketNotifyProvide>(
               //   builder: (context,child,val){
               //     socketStatus = Provide.value<SocketNotifyProvide>(context).status;
-              //     return MaterialButton(
+              //     return RaisedButton(
               //       color: socketStatus == 3? Colors.orange :socketStatus == 0?Colors.red : Colors.lightGreen,
               //       child: Text(
-              //         socketStatus == 3? '正在尝试重连' :socketStatus == 0? '未连接': '已连接',
+              //         socketStatus == 3? '正在尝试重连' :socketStatus == 0? '未连接': '网络正常',
               //       ),
               //       onPressed: (){
 
@@ -127,15 +127,19 @@ class ExhibitionPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  child: RaisedButton(
-                    onPressed: () {},
-                    child: Text(
-                      '网络正常',
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                    color: Colors.lightGreen,
+                  child: Provide<SocketNotifyProvide>(
+                    builder: (context,child,val){
+                      socketStatus = Provide.value<SocketNotifyProvide>(context).server_HeartBest;
+                      return RaisedButton(
+                        color: socketStatus == 3? Colors.orange  : Colors.lightGreen,
+                        child: Text(
+                          socketStatus == 3? '正在尝试重连' : '网络正常',
+                        ),
+                        onPressed: (){
+
+                        },
+                      );
+                    },
                   ),
                 ),
               ),

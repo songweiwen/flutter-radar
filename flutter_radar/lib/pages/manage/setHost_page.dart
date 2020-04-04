@@ -15,7 +15,7 @@ class SetHostPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     //将临展主机和context带入 组装事件代理  并初始化访问临展主机参数读取。
-    // Provide.value<SocketNotifyProvide>(context).setSocketRGJCStatus(9, hostId.toString());
+    Provide.value<SocketNotifyProvide>(context).setSocketStatus(9, hostId.toString(),null);
 
     // 告警次数  
     TextEditingController hostWarningC = TextEditingController();
@@ -29,7 +29,7 @@ class SetHostPage extends StatelessWidget {
     final Widget _floatingActionButtonExtended = FloatingActionButton.extended(
       onPressed: () {
 
-        Provide.value<SocketNotifyProvide>(context).setSocketStatus(9, hostId.toString());
+        Provide.value<SocketNotifyProvide>(context).setSocketStatus(9, hostId.toString(),null);
 
       },
       icon: Icon(Icons.announcement),
@@ -178,8 +178,12 @@ class SetHostPage extends StatelessWidget {
                 onPressed: (){
 
                   print('您要设置的参数是 告警次数${hostWarningC.text} 总告警次数 展柜标签告警次数 展柜标签总次数');
-
-                  Provide.value<SocketNotifyProvide>(context).setSocketStatus(10, hostId.toString());
+                  var data = {'hostWarningC':hostWarningC.text,
+                              'hostWarningTotalC':hostWarningTotalC.text,
+                              'rFIDWarningC':rFIDWarningC.text,
+                              'rFIDWarningTotalC':rFIDWarningTotalC.text};
+                  Provide.value<SocketNotifyProvide>(context).setChangeParameter(data);
+                  Provide.value<SocketNotifyProvide>(context).setSocketStatus(10, hostId.toString(),data);
                 },
                 child: Text('设置参数到主机'),
               ),

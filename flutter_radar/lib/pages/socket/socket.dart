@@ -37,48 +37,10 @@ class SocketNetWorkManager {
 
   final BuildContext context;
   
-
   Socket socket;
   /** 缓存的网络数据，暂未处理（一般这里有数据，说明当前接收的数据不是一个完整的消息，需要等待其它数据的到来拼凑成一个完整的消息） */
   List<int> cacheDataInt = List<int>();
-
   
-  // // 工厂模式 : 单例公开访问点
-  // factory SocketNetWorkManager() => _getInstance();
-
-  // static SocketNetWorkManager get instance => _getInstance();
-
-  // // 静态私有成员，没有初始化
-  // static SocketNetWorkManager _instance;
-
-  // // 私有构造函数
-  // SocketNetWorkManager._internal(this.host, this.port) {
-  //   var s  = startSocket();
-  // }
-
-  // Future<Null> startSocket() async {
-  //   // 初始化
-  //   try {
-  //     socket = await Socket.connect(host, port);  
-
-  //     socket.listen(decodeHandle,
-  //       onError: errorHandler,
-  //       onDone: doneHandler,
-  //       cancelOnError: false);
-        
-  //   } catch (e) {
-  //     print("连接socket出现异常，e=${e.toString()}");
-  //   }
-  // }
-
-  // // 静态、同步、私有访问点
-  // static SocketNetWorkManager _getInstance() {
-  //   if (_instance == null) {
-  //     _instance = new SocketNetWorkManager._internal(socketUrl, 6230);
-  //   }
-  //   return _instance;
-  // }
-
   SocketNetWorkManager(this.host,this.port,this.context);
   
   /**
@@ -93,10 +55,11 @@ class SocketNetWorkManager {
         onDone: doneHandler,
         cancelOnError: false);
         print("连接socket成功！！！！！！！！！");
-        Provide.value<SocketNotifyProvide>(context).setSocketStatus(1,"");
+        Provide.value<SocketNotifyProvide>(context).setSocketStatus(1,"",null);
+        Provide.value<SocketNotifyProvide>(context).sureHeartBest();//此时一定要给心跳重制
     } catch (e) {
       print("连接socket出现异常，e=${e.toString()}");
-      Provide.value<SocketNotifyProvide>(context).setSocketStatus(3,"");
+      Provide.value<SocketNotifyProvide>(context).setSocketStatus(3,"",null);
     }
 
   }
@@ -150,7 +113,7 @@ class SocketNetWorkManager {
               //读取指令
               switch (cacheDataInt[6]) {
                 case 0x02: //服务器应答 登陆成功
-                  Provide.value<SocketNotifyProvide>(context).setSocketStatus(1,"");
+                  Provide.value<SocketNotifyProvide>(context).setSocketStatus(1,"",null);
                   //处理完成当前指令
                   cacheDataInt = cacheDataInt.sublist(headerByteLen+ msgLen + crcByteLen + trailByteLen,cacheDataInt.length);
                   break;
@@ -159,7 +122,7 @@ class SocketNetWorkManager {
                   int cardLength = Hex.decode(Hex.encode(cacheDataInt[9]) + Hex.encode(cacheDataInt[10]));
                   List<int> cardBuffer = cacheDataInt.sublist(7, 7+2+2+cardLength);
                   // Provide.value<SocketNotifyProvide>(context).setWarningSocketModel(cardBuffer, context ,'位移','');
-                  Provide.value<SocketNotifyProvide>(context).setSocketStatus(1,"");
+                  Provide.value<SocketNotifyProvide>(context).setSocketStatus(1,"",null);
                   //处理完成当前指令
                   cacheDataInt.clear();
                   // cacheDataInt = cacheDataInt.sublist(headerByteLen+ msgLen + crcByteLen + trailByteLen,cacheDataInt.length);
@@ -170,12 +133,12 @@ class SocketNetWorkManager {
                   List<int> cardBuffer = cacheDataInt.sublist(7, 7+2+2+cardLength);
                   // Provide.value<SocketNotifyProvide>(context).setWarningSocketModel(cardBuffer, context, '失联','');
                   // cacheDataInt = cacheDataInt.sublist(headerByteLen+ msgLen + crcByteLen + trailByteLen,cacheDataInt.length);
-                  Provide.value<SocketNotifyProvide>(context).setSocketStatus(1,"");
+                  Provide.value<SocketNotifyProvide>(context).setSocketStatus(1,"",null);
                   cacheDataInt.clear();
                   break;
                 case 0x10: // 服务器心跳应答
                   print('收到服务器心跳的应答！');
-                  Provide.value<SocketNotifyProvide>(context).checkHeartBest();
+                  Provide.value<SocketNotifyProvide>(context).sureHeartBest();
                   //处理完成当前指令
                   // cacheDataInt = cacheDataInt.sublist(headerByteLen+ msgLen + crcByteLen + trailByteLen,cacheDataInt.length);
                   cacheDataInt.clear();
@@ -315,6 +278,7 @@ class SocketNetWorkManager {
 
   //发送登陆socket服务器包
   void sendLogin() async{
+
     Uint8List msgLogin;
     List<int> buffer = [0x28,0x97];
     List<int> body_buffer = [0x00, 0x12, 0x03, 0x04, 0x01, 0x00, 0x01, 0x01]; 
@@ -493,7 +457,7 @@ class SocketNetWorkManager {
 
 
 // 手机设置临展主机参数
-  void sendSetHost(String str) async {
+  void sendSetHost(String str , dynamic data) async {
 
     Uint8List msgLogin;
     List<int> buffer = [0x28,0x97];
@@ -517,10 +481,10 @@ class SocketNetWorkManager {
           body_buffer.add(_hexToInt(phoneNumber.substring(i,i+2)));
         }
         // 对设置的参数进行拼接
-        body_buffer.add(_hexToInt('09'));
-        body_buffer.add(_hexToInt('09'));
-        body_buffer.add(_hexToInt('09'));
-        body_buffer.add(_hexToInt('09'));
+        body_buffer.add(_hexToInt(data['hostWarningC']));
+        body_buffer.add(_hexToInt(data['hostWarningTotalC']));
+        body_buffer.add(_hexToInt(data['rFIDWarningC']));
+        body_buffer.add(_hexToInt(data['rFIDWarningTotalC']));
 
         Uint8List crcbuffer = Uint8List.fromList(body_buffer);
         int crc = Crc16.calcCrc16(crcbuffer,crcbuffer.length);
@@ -564,18 +528,18 @@ class SocketNetWorkManager {
   void errorHandler(error, StackTrace trace){
     print("捕获socket异常信息：error=$error，trace=${trace.toString()}");
     socket.close();
-    Provide.value<SocketNotifyProvide>(context).setSocketStatus(3,"");
-    init();
-    sendLogin();
+    Provide.value<SocketNotifyProvide>(context).setSocketStatus(3,"",null);
+
   }
  
-  void doneHandler(){
+  void doneHandler(){ 
+    // socket.close();
     socket.destroy();
     // Provide.value<SocketNotifyProvide>(context).setSocketStatus(3,"");
     // //断开链接 暂时处理方法  重连
+    print("socket关闭处理");
     // init();
     // sendLogin();
-    print("socket关闭处理");
   }
 
 

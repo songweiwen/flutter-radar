@@ -37,18 +37,29 @@ class SocketNotifyProvide with ChangeNotifier{
   int rFIDWarningCount = 0;
   int rFIDWarningTotalCount = 0;
 
+  Object dataObject;
+
   // 检查服务器心跳状态
   checkHeartBest() {
     server_HeartBest += 1;
-    if(server_HeartBest >3) {
-      server_HeartBest = 1;
+    if (server_HeartBest  >= 3) {
+      status = 3;
+      notifyListeners();
     }
   }
 
+  // 确认服务器心跳
+  sureHeartBest(){
+    server_HeartBest =0;
+  }
+
   // 告知sokcet状态
-  setSocketStatus(int statusId, String str) {
+  setSocketStatus(int statusId, String str , dynamic data) {
     sendBody = str;
     status = statusId;
+    if(data != null) {
+      dataObject = data;
+    }
     notifyListeners();
   }
 
@@ -126,6 +137,15 @@ class SocketNotifyProvide with ChangeNotifier{
     }
   }
 
+
+  // 修改时增加的主要属性变化
+  setChangeParameter(dynamic data){
+    hostWarningCount = int.parse(data['hostWarningC']);
+    hostWarningTotalCount = int.parse(data['hostWarningTotalC']);
+    rFIDWarningCount = int.parse(data['rFIDWarningC']);
+    rFIDWarningTotalCount = int.parse(data['rFIDWarningTotalC']);
+
+  }
 
     // 解析  读取参数 的主要属性
   setCheckReadHostParameter(List<int>buffer, BuildContext context , String type) {

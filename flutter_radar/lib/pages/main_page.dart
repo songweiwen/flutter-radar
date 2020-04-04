@@ -276,7 +276,7 @@ class _MainPageState extends State<MainPage> {
                                                               ),
                                                               onPressed: () {
                                                                 //发送关闭socket处理
-                                                                Provide.value<SocketNotifyProvide>(context).setSocketStatus(99,"");
+                                                                Provide.value<SocketNotifyProvide>(context).setSocketStatus(99,"",null);
                                                                   // 删除所有本地化配置
                                                                   _clear();
                                                                   // 退出sokcet服务器
@@ -352,6 +352,8 @@ class _MainPageState extends State<MainPage> {
                         //每秒发一次心跳请求
                     Timer.periodic(Duration(seconds: 30), (t){
                       networkManager.sendHeart();
+                      //给心跳增加数据
+                      Provide.value<SocketNotifyProvide>(context).checkHeartBest();
                       new DateTime.now().millisecondsSinceEpoch;
                     });
                     timerlock=false;
@@ -360,9 +362,13 @@ class _MainPageState extends State<MainPage> {
                 case 3:
                   //通讯中断
                   Timer.periodic(Duration(seconds: 5), (t){
-                      if (Provide.value<SocketNotifyProvide>(context).status == 3) {
+                      if (Provide.value<SocketNotifyProvide>(context).server_HeartBest >= 3) {
+                        //重新建立连接之前。需要抛弃上一个对象
+                        networkManager.socket = null;
                         this.initSocket();
-                        networkManager.sendLogin();
+                        // networkManager.sendLogin();
+                      } else {
+                        Provide.value<SocketNotifyProvide>(context).checkHeartBest();
                       }
                       new DateTime.now().millisecondsSinceEpoch;
                     });
@@ -376,7 +382,7 @@ class _MainPageState extends State<MainPage> {
 
                 case 10:
                   print('设置参数正在执行中！'); 
-                  networkManager.sendSetHost(Provide.value<SocketNotifyProvide>(context).sendBody);
+                  networkManager.sendSetHost(Provide.value<SocketNotifyProvide>(context).sendBody,Provide.value<SocketNotifyProvide>(context).dataObject);
                   break;
                 // 退出登陆之后要将socket挂起
                 case 99:
@@ -427,6 +433,7 @@ class _MainPageState extends State<MainPage> {
 
   // 重新编写 socket模块
   void initSocket() async{
+    networkManager  = null;
     networkManager = SocketNetWorkManager(socketUrl, 5230,context);
     await networkManager.init();
     if (networkManager !=null) {

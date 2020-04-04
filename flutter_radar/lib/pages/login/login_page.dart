@@ -65,9 +65,10 @@ class _LoginPageState extends State<LoginPage> {
         // 本地持久化数据
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('userName', userName);
+        prefs.setInt('admin', int.parse(responseData['data']['admin']));
 
         // 登陆成功后需要对socket进行连接处理
-        Provide.value<SocketNotifyProvide>(context).setSocketStatus(3, '');
+        Provide.value<SocketNotifyProvide>(context).setSocketStatus(3, '',null);
 
         Navigator.pop(context);
 
