@@ -5,6 +5,7 @@ import 'package:flutter_radar/model/host_model.dart';
 import 'package:flutter_radar/provide/hostList.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../routers/application.dart';
 
@@ -12,19 +13,8 @@ class HostPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-    // final Widget _floatingActionButtonExtended = FloatingActionButton.extended(
-    //   onPressed: () {
 
-    //   },
-    //   icon: Icon(Icons.announcement),
-    //   label: Text('检测主机'),
-    // );
     return Scaffold(
-      
-      // floatingActionButton: _floatingActionButtonExtended,
-      // //配置悬浮按钮的位置
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 
       body: FutureBuilder(
         future: _gethostList(context),
@@ -74,6 +64,7 @@ class HostPage extends StatelessWidget {
   }
 
   Widget _infoCell(context , Host item) {
+
       return Container(
       margin: EdgeInsets.fromLTRB(ScreenUtil().setWidth(30), 5.0, ScreenUtil().setWidth(30), 5.0),
       decoration: BoxDecoration(
@@ -88,31 +79,7 @@ class HostPage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only( left: ScreenUtil().setWidth(app_width - 300),top: ScreenUtil().setHeight(20)),
             child: MaterialButton(
-              onPressed: (){
-
-                // Fluttertoast.showToast(
-                //   msg: "正在发送人工检测，请稍后。",
-                //   toastLength: Toast.LENGTH_SHORT,
-                //   gravity: ToastGravity.CENTER,
-                // );
-
-                // Provide.value<HostListProvide>(context).getHostStateById(item.hostId);
-
-                // String hostIdStr ;
-                // if (item.hostId < 10) {
-                //   hostIdStr = '000'+ item.hostId.toString();
-                // }
-                // if(item.hostId < 100 && item.hostId > 10) {
-                //   hostIdStr = '00'+ item.hostId.toString();
-                // }
-                // if( item.hostId < 1000 && item.hostId >= 100) {
-                //   hostIdStr = '0'+ item.hostId.toString();
-                // }
-                // if( item.hostId > 1000) {
-                //   hostIdStr = item.hostId.toString();
-                // }
-                // Provide.value<SocketNotifyProvide>(context).setSocketStatus(9,hostIdStr);
-              },
+              onPressed: (){},
               child: Text(item.isWarning?'故障':'正常'),
               color:  item.isWarning? Colors.red:Colors.lightGreen,
             ),
@@ -121,13 +88,21 @@ class HostPage extends StatelessWidget {
           // 临展主机设置按钮
             Padding(
               padding: EdgeInsets.only( left: ScreenUtil().setWidth(app_width - 300),top: ScreenUtil().setHeight(120)),
-              child: MaterialButton(
-                onPressed: (){
-                  Application.router.navigateTo(context, "/sethostpage?id=${item.hostId}");
-                },
-                color: Colors.purple,
-                child: Text('参数'),
-              ),
+              child: FutureBuilder(
+                future: checkAdmin(),
+                builder: (context , AsyncSnapshot<bool>snapshot){
+                  return Offstage(
+                    offstage: snapshot.data == null ? true: snapshot.data,
+                    child: MaterialButton(
+                      onPressed: (){
+                        Application.router.navigateTo(context, "/sethostpage?id=${item.hostId}");
+                      },
+                      color: Colors.purple,
+                      child: Text('参数'),
+                    ),
+                  );
+                }
+              )
             ),
 
             Column(
@@ -179,4 +154,9 @@ class HostPage extends StatelessWidget {
     );
   }
   
+  Future<bool> checkAdmin() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getInt('admin') ==1 ? false: true;
+  }
+
 }
