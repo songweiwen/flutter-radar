@@ -79,9 +79,32 @@ class _SetPushListState extends State<SetPushList> {
     return Column(
       children: <Widget>[
         _switchInkWell(context,'短信'),
-        _switchInkWell(context,'推送通知')
+        _switchInkWell(context,'推送通知'),
+
+        // 服务器状态查看
+        FutureBuilder(
+          future: checkAdmin(),
+          builder: (context , AsyncSnapshot<bool>snapshot){
+            return Offstage(
+              offstage: snapshot.data == null ? true: snapshot.data,
+              child: MaterialButton(
+                onPressed: (){
+                  // 更新查询服务器内容
+                  
+                },
+                color: Colors.purple,
+                child: Text('查询服务器状态'),
+              ),
+            );
+          }
+        )
       ],
     );
+  }
+
+  Future<bool> checkAdmin() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getInt('admin') ==1 ? false: true;
   }
 
   Widget _switchInkWell(BuildContext context, String title) {

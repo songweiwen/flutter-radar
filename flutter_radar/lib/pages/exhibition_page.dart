@@ -1,4 +1,5 @@
 import 'package:connectivity_wrapper/connectivity_wrapper.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radar/config/appSetting.dart';
@@ -30,26 +31,24 @@ class ExhibitionPage extends StatelessWidget {
       children: <Widget>[
         // 展厅的结构图
         Positioned( top: ScreenUtil().setHeight(10), right: 0, left: 0, bottom: ScreenUtil().setHeight(app_height -(app_height - app_width)),
-          child:  Text('因版本冲突问题 测试版本暂不开放此地图功能。')
-          
-          // ExtendedImage.asset(
-          //             'images/珠海展厅结构图.jpg',
-          //             fit: BoxFit.contain,
-          //             mode: ExtendedImageMode.gesture,
-          //             initGestureConfigHandler: (state) {
-          //               return GestureConfig(
-          //                   minScale: 0.9,
-          //                   animationMinScale: 0.7,
-          //                   maxScale: 3.0,
-          //                   animationMaxScale: 3.5,
-          //                   speed: 1.0,
-          //                   inertialSpeed: 100.0,
-          //                   initialScale: 1.0,
-          //                   inPageView: false,
-          //                   //  InitialAlignment.center,
-          //                   );
-          //             },
-          // )
+          child: ExtendedImage.asset(
+            'images/zhuhaijiegoutu.jpg',
+            fit: BoxFit.contain,
+            mode: ExtendedImageMode.gesture,
+            initGestureConfigHandler: (state) {
+                return GestureConfig(
+                    minScale: 0.9,
+                    animationMinScale: 0.7,
+                    maxScale: 3.0,
+                    animationMaxScale: 3.5,
+                    speed: 1.0,
+                    inertialSpeed: 100.0,
+                    initialScale: 1.0,
+                    inPageView: false,
+                    //  InitialAlignment.center,
+                );
+              },
+          )
         ),
         
         // 展厅详情进入按钮
@@ -82,29 +81,9 @@ class ExhibitionPage extends StatelessWidget {
           child: Row(
             children: <Widget>[
 
-              // // socket状态按钮 
-              // Provide<SocketNotifyProvide>(
-              //   builder: (context,child,val){
-              //     socketStatus = Provide.value<SocketNotifyProvide>(context).status;
-              //     return RaisedButton(
-              //       color: socketStatus == 3? Colors.orange :socketStatus == 0?Colors.red : Colors.lightGreen,
-              //       child: Text(
-              //         socketStatus == 3? '正在尝试重连' :socketStatus == 0? '未连接': '网络正常',
-              //       ),
-              //       onPressed: (){
-
-              //       },
-              //     );
-              //   },
-              // ),
-
-              
-
               // 网络状态
               Container(
                 padding: EdgeInsets.only(left: 10),
-                // height: ScreenUtil().setHeight(100),
-                // width: ScreenUtil().setWidth(300),
                 child:ConnectivityWidgetWrapper(
                   stacked: false,
                   offlineWidget: RaisedButton(
@@ -172,131 +151,7 @@ class ExhibitionPage extends StatelessWidget {
       ],
 
     );
-
-
-
-
-  //   return Stack(
-  //     children: <Widget>[
-
-  //       // 展厅结构图
-  //       Positioned( top: ScreenUtil().setHeight(10), right: 0, left: 0, bottom: ScreenUtil().setHeight(20),
-  //         child: Container(
-  //           height: ScreenUtil().setHeight(app_width),
-  //           child: Column(
-  //             children: <Widget>[
-  //               Padding(
-  //                 padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(10)),
-  //                   child: ExtendedImage.asset(
-  //                     'images/珠海展厅结构图.jpg',
-  //                     fit: BoxFit.contain,
-  //                     mode: ExtendedImageMode.gesture,
-  //                     initGestureConfigHandler: (state) {
-  //                       return GestureConfig(
-  //                           minScale: 0.9,
-  //                           animationMinScale: 0.7,
-  //                           maxScale: 3.0,
-  //                           animationMaxScale: 3.5,
-  //                           speed: 1.0,
-  //                           inertialSpeed: 100.0,
-  //                           initialScale: 1.0,
-  //                           inPageView: false,
-  //                           //  InitialAlignment.center,
-  //                           );
-  //                     },
-  //                   ),
-  //               ),
-                
-  //               Provide<MainPageProvide>(
-  //                 builder: (context,child,childCategory){
-  //                   return Center(
-  //                     child: Container(
-  //                       height: ScreenUtil().setHeight(150),
-  //                       width: ScreenUtil().setWidth(app_width),
-  //                       child:ListView.builder(
-  //                         scrollDirection: Axis.horizontal,
-  //                         itemCount: areaNameList.length,
-  //                         itemBuilder: (context,index){
-
-  //                           return _rightInkWell(context,index,areaNameList[index]);
-  //                         },
-  //                       ),
-  //                     ),
-  //                   );
-  //                 },
-  //               ),
-
-                
-
-  //               // MaterialButton(
-  //               //   child: Text(areaNameList.first.exhibitionName),
-  //               //   onPressed: (){
-  //               //     Application.router.navigateTo(context, "/exhibitiondetailspage");
-  //               //   },
-  //               // )
-                
-  //             ],
-  //           )
-  //         ),
-  //       ),
-
-
-  //       // 两个按钮  展品列表和展厅介绍
-  //       Positioned(right: 10, bottom: 0, 
-  //         child: _stackMyBotton(context,exhibition),
-  //       ),
-
-
-        
-  //       Positioned(left: ScreenUtil().setHeight(10), bottom: ScreenUtil().setHeight(10),
-  //         child: Row(
-  //           children: <Widget>[
-  //             // socket状态按钮 
-  //             Provide<SocketNotifyProvide>(
-  //               builder: (context,child,val){
-  //                 socketStatus = Provide.value<SocketNotifyProvide>(context).status;
-  //                 return MaterialButton(
-  //                   color: socketStatus == 3? Colors.orange :socketStatus == 0?Colors.red : Colors.lightGreen,
-  //                   child: Text(
-  //                     socketStatus == 3? '正在尝试重连' :socketStatus == 0? '未连接': '已连接',
-  //                   ),
-  //                   onPressed: (){
-
-  //                   },
-  //                 );
-  //               },
-  //             ),
-
-
-  //             // // 报警记录查询
-  //             Container(
-  //               padding: EdgeInsets.only(left: 10),
-  //               child: MaterialButton(
-  //                 color: Colors.lightGreen,
-  //                 child: Text(
-  //                   '报警查询'
-  //                 ),
-  //                 onPressed: (){
-  //                   Fluttertoast.showToast(
-  //                     msg: "正在查询报警记录中。请稍后。",
-  //                     toastLength: Toast.LENGTH_SHORT,
-  //                     gravity: ToastGravity.CENTER,
-  //                   );
-
-  //                   Provide.value<SocketNotifyProvide>(context).setWarningListByAll(context);
-                    
-  //                 },
-  //               ),
-  //             )
-  //           ],
-  //         )
-  //       ),
-  //     ],
-  //   );
-  // }
-
   }
-//
 
 
   Widget _rightInkWell(BuildContext context, int index,Exhibition item) {

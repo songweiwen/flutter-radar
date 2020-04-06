@@ -80,7 +80,7 @@ class CircleView extends StatelessWidget {
 // setting ListView
 class SettingListView extends StatelessWidget {
 
-  final rowTitles = ['推送设置','关于我们'];
+  final rowTitles = ['设置','关于我们'];
   final rowImages = ['images/xiugaimima.png','images/guanyuwomen.png'];
 
   @override
@@ -92,7 +92,7 @@ class SettingListView extends StatelessWidget {
             InkWell(
               onTap: () async {
                 switch (rowTitles[f]) {
-                  case '推送设置':
+                  case '设置':
                     SharedPreferences prefs = await SharedPreferences.getInstance(); 
                     String phoneNumber = prefs.getString('userName');
                     if (phoneNumber != null) {
