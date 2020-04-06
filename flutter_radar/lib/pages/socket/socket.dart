@@ -48,7 +48,7 @@ class SocketNetWorkManager {
    */
   void init() async{
     try {
-      socket = await Socket.connect(host, port);  
+      socket = await Socket.connect(host, port, timeout: Duration(seconds: 5));  
 
       socket.listen(decodeHandle,
         onError: errorHandler,
@@ -59,7 +59,7 @@ class SocketNetWorkManager {
         Provide.value<SocketNotifyProvide>(context).sureHeartBest();//此时一定要给心跳重制
     } catch (e) {
       print("连接socket出现异常，e=${e.toString()}");
-      Provide.value<SocketNotifyProvide>(context).setSocketStatus(3,"",null);
+      // Provide.value<SocketNotifyProvide>(context).setSocketStatus(3,"",null);
     }
 
   }

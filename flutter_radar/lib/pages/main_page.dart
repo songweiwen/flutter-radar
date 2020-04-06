@@ -175,11 +175,23 @@ class _MainPageState extends State<MainPage> {
   //定时器同步锁
   bool timerlock = true;
 
+
+    // 重新编写 socket模块
+  void initSocket() async{
+    networkManager  = null;
+    networkManager = SocketNetWorkManager(socketUrl, 5230,context);
+    await networkManager.init();
+    if (networkManager !=null) {
+      //发送登陆请求
+      networkManager.sendLogin();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // 设置自动布局 
     ScreenUtil.instance = ScreenUtil(width: app_width, height: app_height)..init(context);
-
+    Timer timer;
     return Stack(
       children: <Widget>[
         //布局页面主体
@@ -348,6 +360,7 @@ class _MainPageState extends State<MainPage> {
               int socketStatus = Provide.value<SocketNotifyProvide>(context).status;
               switch (socketStatus) {
                 case 1:
+                  timer!=null? timer.cancel():'';
                   if (timerlock) {
                         //每秒发一次心跳请求
                     Timer.periodic(Duration(seconds: 30), (t){
@@ -360,20 +373,14 @@ class _MainPageState extends State<MainPage> {
                   }
                   break;
                 case 3:
-                  //通讯中断
-                  Timer.periodic(Duration(seconds: 5), (t){
-                      if (Provide.value<SocketNotifyProvide>(context).server_HeartBest >= 3) {
-                        //重新建立连接之前。需要抛弃上一个对象
-                        networkManager.socket = null;
-                        this.initSocket();
-                        // networkManager.sendLogin();
-                      } else {
-                        Provide.value<SocketNotifyProvide>(context).checkHeartBest();
-                      }
-                      new DateTime.now().millisecondsSinceEpoch;
-                    });
-                  
-                  // networkManager.doneHandler();
+                  if (Provide.value<SocketNotifyProvide>(context).server_HeartBest >= 3) {
+                    //重新建立连接之前。需要抛弃上一个对象
+                    // networkManager.socket = null;
+                    this.initSocket();
+                    networkManager.sendLogin();
+                  } else {
+                    Provide.value<SocketNotifyProvide>(context).addHeartBest();
+                  } 
                   break;
                 case 9:
                   print('读取参数正在执行中！');
@@ -431,16 +438,6 @@ class _MainPageState extends State<MainPage> {
     return 'end';
   }
 
-  // 重新编写 socket模块
-  void initSocket() async{
-    networkManager  = null;
-    networkManager = SocketNetWorkManager(socketUrl, 5230,context);
-    await networkManager.init();
-    if (networkManager !=null) {
-      //发送登陆请求
-      networkManager.sendLogin();
-    }
-  }
 }
 
 
@@ -502,27 +499,7 @@ class SwiperDiy extends StatelessWidget{
                       Application.router.navigateTo(context, "/login");
                           }
                   });
-              
-              // if (userName.length > 1) {
-              //   _getExhibitionInfoByAreaName(context, swiperDataList[index]);
-              //   Exhibition exhibition = Provide.value<MainPageProvide>(context).exhibition;
-              //   if (exhibition.exhibitionAreaName != null && exhibition.exhibitionAreaName.length >0) {
-              //     Application.router.navigateTo(context, "/index?id=${exhibition.exhibitionId}");
-              //   } else {
-              //       Fluttertoast.showToast(
-              //         msg: "该区域未获权限。",
-              //         toastLength: Toast.LENGTH_SHORT,
-              //         gravity: ToastGravity.CENTER,
-              //       );
-              //   }
-              // } else {
-              //   Fluttertoast.showToast(
-              //     msg: "尚未登陆，请登陆!",
-              //     toastLength: Toast.LENGTH_SHORT,
-              //     gravity: ToastGravity.CENTER,
-              //   );
-              //   Application.router.navigateTo(context, "/login");
-              // }
+            
             },
             child: Column(
               children: <Widget>[
@@ -561,118 +538,4 @@ class SwiperDiy extends StatelessWidget{
     return 'end';
   }
   
-}
-
-
-// socket 组件
-class SocketManager extends StatefulWidget {
-  
-  final BuildContext context;
-
-  SocketManager(this.context);
-
-  @override
-  _SocketManagerState createState() => _SocketManagerState(context);
-}
-
-class _SocketManagerState extends State<SocketManager> {
-  
-  // SocketNetWorkManager networkManager = SocketNetWorkManager.instance;
-
-  final BuildContext context;
-  var networkManager;
-
-  _SocketManagerState(this.context);
-  void s() async {
-    
-      //创建网络管理器
-      networkManager = SocketNetWorkManager(socketUrl, 5230,context);
-      // networkManager = SocketNetWorkManager("192.168.100.110", 5230, context);
-      
-      await networkManager.init();
-      if (networkManager !=null) {
-        //发送登陆请求
-        networkManager.sendLogin();
-      }
-
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    SharedPreferences.getInstance().then((val){
-      if(val.getString('userName')!=null) {
-        this.s();
-      } else {
-        Fluttertoast.showToast(
-          msg: "请先登陆账号以连接通讯服务器。",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-        );
-      }
-    });
-
-  }
-
-    /// State在树种移除调用
-  @override
-  void deactivate() {
-    // TODO: implement deactivate
-    super.deactivate();
-    print('deactivate');
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    print('deactivate');
-  }
-
-  bool ss = true;
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Container(
-      child: Provide<SocketNotifyProvide>(
-        builder: (context,child,val){
-          int socketStatus = Provide.value<SocketNotifyProvide>(context).status;
-          switch (socketStatus) {
-            case 1:
-              if (ss) {
-                    //每秒发一次心跳请求
-                Timer.periodic(Duration(seconds: 30), (t){
-                  networkManager.sendHeart();
-                  new DateTime.now().millisecondsSinceEpoch;
-                });
-                ss=false;
-              }
-              break;
-            case 3:
-              //通讯中断
-              Timer.periodic(Duration(seconds: 5), (t){
-                  if (Provide.value<SocketNotifyProvide>(context).status == 3) {
-                    this.s();
-                    networkManager.sendLogin();
-                  }
-                  new DateTime.now().millisecondsSinceEpoch;
-                });
-              
-              // networkManager.doneHandler();
-              break;
-            case 9:
-              print('人工检测正在执行中！');
-              networkManager.sendRGJC(Provide.value<SocketNotifyProvide>(context).sendBody);
-              break;
-            default:
-          }
-
-          return Container();
-        },
-      ),
-    );
-  }
 }

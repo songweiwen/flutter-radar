@@ -43,9 +43,14 @@ class SocketNotifyProvide with ChangeNotifier{
   checkHeartBest() {
     server_HeartBest += 1;
     if (server_HeartBest  >= 3) {
+      // server_HeartBest= 0;
       status = 3;
       notifyListeners();
     }
+  }
+
+  addHeartBest(){
+    server_HeartBest +=1;
   }
 
   // 确认服务器心跳
