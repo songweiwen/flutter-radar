@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +15,7 @@ class SetHostPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    BotToast.showLoading(duration: Duration(seconds:5));
     //将临展主机和context带入 组装事件代理  并初始化访问临展主机参数读取。
     Provide.value<SocketNotifyProvide>(context).setSocketStatus(9, hostId.toString(),null);
 
@@ -28,7 +30,7 @@ class SetHostPage extends StatelessWidget {
 
     final Widget _floatingActionButtonExtended = FloatingActionButton.extended(
       onPressed: () {
-
+        BotToast.showLoading(duration: Duration(seconds: 5));
         Provide.value<SocketNotifyProvide>(context).setSocketStatus(9, hostId.toString(),null);
 
       },
@@ -37,9 +39,10 @@ class SetHostPage extends StatelessWidget {
     );
 
     return Scaffold(
-      floatingActionButton: _floatingActionButtonExtended,
-      //配置悬浮按钮的位置
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      // floatingActionButton: _floatingActionButtonExtended,
+      // //配置悬浮按钮的位置
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
       // app_title + back
       appBar: AppBar(
         leading: IconButton(
@@ -172,22 +175,48 @@ class SetHostPage extends StatelessWidget {
               ],
             ),
           
-            // 设置参数按钮 
-            Center(
-              child: MaterialButton(
-                onPressed: (){
+            // 设置参数  和 读取参数
+            Padding(
+              padding: EdgeInsets.only(top: ScreenUtil().setHeight(150)),
+              child:Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  //设置参数
+                  MaterialButton(
+                    onPressed: (){
+                      BotToast.showLoading(duration: Duration(seconds: 5));
+                      print('您要设置的参数是 告警次数${hostWarningC.text} 总告警次数 展柜标签告警次数 展柜标签总次数');
+                      var data = {'hostWarningC':hostWarningC.text,
+                                  'hostWarningTotalC':hostWarningTotalC.text,
+                                  'rFIDWarningC':rFIDWarningC.text,
+                                  'rFIDWarningTotalC':rFIDWarningTotalC.text};
+                      Provide.value<SocketNotifyProvide>(context).setChangeParameter(data);
+                      Provide.value<SocketNotifyProvide>(context).setSocketStatus(10, hostId.toString(),data);
+                    },
+                    child: Text('设置参数'),
+                    shape: Border.all(
+                      // width: 10,
+                      color: Colors.blue,
+                      style: BorderStyle.solid,
+                    ),
+                  ),
 
-                  print('您要设置的参数是 告警次数${hostWarningC.text} 总告警次数 展柜标签告警次数 展柜标签总次数');
-                  var data = {'hostWarningC':hostWarningC.text,
-                              'hostWarningTotalC':hostWarningTotalC.text,
-                              'rFIDWarningC':rFIDWarningC.text,
-                              'rFIDWarningTotalC':rFIDWarningTotalC.text};
-                  Provide.value<SocketNotifyProvide>(context).setChangeParameter(data);
-                  Provide.value<SocketNotifyProvide>(context).setSocketStatus(10, hostId.toString(),data);
-                },
-                child: Text('设置参数到主机'),
+                  //读取参数
+                  MaterialButton(
+                    onPressed: (){
+                      BotToast.showLoading(duration: Duration(seconds: 5));
+                      Provide.value<SocketNotifyProvide>(context).setSocketStatus(9, hostId.toString(),null);
+                    },
+                    child: Text('读取参数'),
+                    shape: Border.all(
+                      // width: 10,
+                      color: Colors.blue,
+                      style: BorderStyle.solid,
+                    ),
+                  ),
+                ],
               ),
-            )
+            ),
 
           ],
         ),

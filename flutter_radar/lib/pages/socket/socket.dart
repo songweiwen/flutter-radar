@@ -1,6 +1,7 @@
 
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:convert_hex/convert_hex.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radar/provide/socketNotify.dart';
@@ -110,6 +111,7 @@ class SocketNetWorkManager {
             //crc 校验通过
             // 读取目标端口号 确定本条消息发自手机app
             if (cacheDataInt[5] == 0x03) { // 目标端口号显示为手机app
+            BotToast.closeAllLoading();
               //读取指令
               switch (cacheDataInt[6]) {
                 case 0x02: //服务器应答 登陆成功
