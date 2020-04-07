@@ -48,13 +48,18 @@ class Pin extends Exhibits{ //修改 继承exhibits  能获取到网络上的xy�
   /// 相对于地图中心的点位
   final Offset location;
 
+  // 
+  // final String exhibitsId;
+
+  final Exhibits e;
+
   /// 触摸位置
   Rect touch;
 
   // 添加属性  是否特殊大头针 （临展主机）
   final bool isHost;
 
-  Pin(this.pinId, this.location, this.isHost);
+  Pin(this.pinId, this.location, this.isHost, this.e);
 
   @override
   bool operator ==(Object other) =>

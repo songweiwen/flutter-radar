@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radar/config/service_url.dart';
 import 'package:flutter_radar/model/host_model.dart';
@@ -192,6 +193,9 @@ class _MainPageState extends State<MainPage> {
     // 设置自动布局 
     ScreenUtil.instance = ScreenUtil(width: app_width, height: app_height)..init(context);
     Timer timer;
+
+    BotToast.showLoading();
+
     return Stack(
       children: <Widget>[
         //布局页面主体
@@ -202,6 +206,7 @@ class _MainPageState extends State<MainPage> {
               if (snapshot.hasData != null) {
                 List<String> swiperDataList = Provide.value<MainPageProvide>(context).swiperDataList;
                 if (swiperDataList.length != 0) {
+                  BotToast.closeAllLoading();
                   return Container(
                     width: ScreenUtil().setWidth(app_width),
                     // 底板 青花瓷底图

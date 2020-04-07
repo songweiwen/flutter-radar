@@ -63,45 +63,6 @@ class ExhibitionDetailsPage extends StatelessWidget {
             child:  MakeMapPage(exhibitionId),
           ),
 
-          // Stack(
-          //   children: <Widget>[MakeMapPage()],
-          // ),
-
-
-          // Expanded(
-          //   child: Stack(
-          //     children: <Widget>[MakeMapPage()],
-          //   )
-          // ),
-
-
-            // Text('测试程序图片缩放功能是否删掉了')
-            
-            // ExtendedImage.asset(
-            //   'images/珠海${exhibition.exhibitionName}.jpg',
-            //   fit: BoxFit.contain,
-            //   mode: ExtendedImageMode.gesture,
-            //   initGestureConfigHandler: (state) {
-            //     return GestureConfig(
-            //         minScale: 0.9,
-            //         animationMinScale: 0.7,
-            //         maxScale: 3.0,
-            //         animationMaxScale: 3.5,
-            //         speed: 1.0,
-            //         inertialSpeed: 100.0,
-            //         initialScale: 1.0,
-            //         inPageView: false,
-            //         //  InitialAlignment.center,
-            //         );
-            //   },
-            // ),
-
-            // Image(
-            //   image: AssetImage("images/珠海${exhibition.exhibitionName}.jpg"),
-            //   fit: BoxFit.cover,
-            // ),
-          // ),
-
           Expanded(
             child: FutureBuilder(
               future: _getrfidList(context),
@@ -324,7 +285,7 @@ class _MakeMapPageState extends State<MakeMapPage> {
         //加入主机pin
         for (Host h in warningList) {
           //添加临展主机大头针标示
-          Pin p = new Pin(h.hostId, new Offset(h.mobileLeft, h.mobileTop),true);
+          Pin p = new Pin(h.hostId, new Offset(h.mobileLeft, h.mobileTop),true, null);
           _pins.list.add(p);
         }
 
@@ -342,10 +303,10 @@ class _MakeMapPageState extends State<MakeMapPage> {
             if (p != null)
             BotToast.showAttachedWidget(
                 // 3.1 这个表示弹出的起泡相对于点击的位置进行一定偏移
-                target: pos.translate(100, 50),
+                target: pos.translate(100, 50), 
                 attachedBuilder: (onCancel) => Material(
                   child: Padding(
-                      child: Text(p.isHost? '这是临展主机${p.pinId}':'这是报警标签'), padding: EdgeInsets.all(10)),
+                      child: Text(p.isHost? '临展主机${p.pinId}号':'${p.e.exhibitsId},${p.e.exhibitsName}'), padding: EdgeInsets.all(10)),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
                 ),

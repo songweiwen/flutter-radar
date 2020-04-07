@@ -325,7 +325,7 @@ class SocketNotifyProvide with ChangeNotifier{
     print('-----------version 1.2 新增输出内容');  
     print(warningList.length);
     for (Exhibits e in warningList) {
-      Pin p = new Pin(e.rfidId, new Offset(e.mobileLeft, e.mobileTop), false);
+      Pin p = new Pin(e.rfidId, new Offset(e.mobileLeft, e.mobileTop), false, e);
       p.exhibitionId = e.exhibitionId;
       pinList.list.add(p);
     }

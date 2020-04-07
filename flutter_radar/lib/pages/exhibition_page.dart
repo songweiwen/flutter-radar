@@ -143,8 +143,7 @@ class ExhibitionPage extends StatelessWidget {
                   },
                 ),
               )
-
-
+              
             ],
           )
         ),

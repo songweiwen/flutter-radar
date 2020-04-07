@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radar/config/service_url.dart';
@@ -42,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void login() async{
+    BotToast.showLoading(duration: Duration(seconds: 10));
     //读取当前的Form状态
     var loginForm = loginKey.currentState;
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -55,6 +57,7 @@ class _LoginPageState extends State<LoginPage> {
       print('userName: ' + userName + ' password: ' + password);
       var response = await Dio().post(servicePath['loginPage'],queryParameters:{'username':userName,'password':password,'jpushId':jpushId});
       var responseData = json.decode(response.toString());
+      BotToast.closeAllLoading();
       if (responseData['status'] == 1) {
         Fluttertoast.showToast(
           msg: "登录成功！",
