@@ -18,4 +18,5 @@ const servicePath ={
   'exitJpush' : serviceUrl + 'login/exit',// 退出极光推送
   'checkPush' : serviceUrl + 'login/checkpush', // 检查用户 推送设置状态
   'setJpush' : serviceUrl + 'login/setJpush',// 设置极光推送
+  'checkServers': serviceUrl + 'login/checkservers',// 查询服务器状态
 };

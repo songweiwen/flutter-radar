@@ -9,6 +9,7 @@ import 'package:flutter_radar/pages/login/login_page.dart';
 import 'package:flutter_radar/pages/manage/history_page.dart';
 import 'package:flutter_radar/pages/manage/host_page.dart';
 import 'package:flutter_radar/pages/setting/aboutUs_page.dart';
+import 'package:flutter_radar/pages/setting/servers_page.dart';
 import 'package:flutter_radar/pages/setting/setPush_page.dart';
 import 'package:flutter_radar/pages/manage/setHost_page.dart';
 
@@ -100,5 +101,12 @@ Handler setHostPageHandler = Handler(
   handlerFunc: (BuildContext context, Map<String, List<String>> params){
     int hostId = int.parse(params['id'] == null?'1':params['id'].first);
     return SetHostPage(hostId);
+  }
+);
+
+//进入 服务器状态页面
+Handler checkServersHandler = Handler(
+  handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return ServersPage();
   }
 );

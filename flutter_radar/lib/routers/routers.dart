@@ -17,6 +17,7 @@ class Routes {
   static String exhibitionRecommdPage = '/exhibitionrecommdpage';
   static String hostPage = '/hostpage';
   static String sethostPage = '/sethostpage';
+  static String checkServersPage= '/checkserverspage';
   static void configureRoutes(Router router) {
     router.notFoundHandler = new Handler(
       handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -35,5 +36,6 @@ class Routes {
     router.define(exhibitionRecommdPage,handler: exhibitionRecommdPageHandler);
     router.define(hostPage,handler:hostPageHandler);
     router.define(sethostPage, handler: setHostPageHandler);
+    router.define(checkServersPage, handler: checkServersHandler);
   }
 }

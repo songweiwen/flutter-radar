@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radar/config/appSetting.dart';
 import 'package:flutter_radar/config/service_url.dart';
+import 'package:flutter_radar/routers/application.dart';
 import 'package:flutter_radar/service/service_method.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -90,7 +91,7 @@ class _SetPushListState extends State<SetPushList> {
               child: MaterialButton(
                 onPressed: (){
                   // 更新查询服务器内容
-                  
+                  Application.router.navigateTo(context, "/checkserverspage");
                 },
                 color: Colors.purple,
                 child: Text('查询服务器状态'),

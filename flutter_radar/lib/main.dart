@@ -13,6 +13,7 @@ import 'package:flutter_radar/provide/currentIndex.dart';
 import 'package:flutter_radar/provide/exhibitsList.dart';
 import 'package:flutter_radar/provide/hostList.dart';
 import 'package:flutter_radar/provide/mainPage.dart';
+import 'package:flutter_radar/provide/servers_provide.dart';
 import 'package:flutter_radar/provide/socketNotify.dart';
 import 'package:flutter_radar/provide/warningManage.dart';
 import 'package:flutter_radar/routers/application.dart';
@@ -31,8 +32,10 @@ void main() async{
   var exhibitsListProvide = ExhibitsListProvide();
   var socketNotifyProvide = SocketNotifyProvide();
   var hostPageProvide = HostListProvide();
+  var serversPageProvide = ServersProvide();
   var providers = Providers();
   providers
+  ..provide(Provider<ServersProvide>.value(serversPageProvide))
   ..provide(Provider<HostListProvide>.value(hostPageProvide))
   ..provide(Provider<SocketNotifyProvide>.value(socketNotifyProvide))
   ..provide(Provider<ExhibitsListProvide>.value(exhibitsListProvide))

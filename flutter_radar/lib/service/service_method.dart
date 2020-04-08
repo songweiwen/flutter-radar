@@ -205,3 +205,21 @@ Future getUserPushState(Map<String,dynamic> data) async {
     return print('错误：=======>${e}');
   }
 }
+
+
+//获取服务器情况
+Future getServersStatus() async {
+  try {
+    Response response;
+    Dio dio = new Dio();
+    dio.options.responseType = ResponseType.plain;
+    response = await dio.get(servicePath['checkServers']);
+    if(response.statusCode==200){
+      return response.data;
+    }else{
+      throw Exception(server_error);
+    }
+  } catch (e) {
+    return print('错误：=======>${e}');
+  }
+}
