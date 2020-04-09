@@ -516,7 +516,7 @@ class SwiperDiy extends StatelessWidget{
                     ), 
                     borderRadius: new BorderRadius.circular(ScreenUtil().setSp(20)),
                   ),
-                  height: ScreenUtil().setHeight(384),
+                  height: ScreenUtil().setHeight(375),
                   width: ScreenUtil().setWidth(445),
                 ),
                 Text(
