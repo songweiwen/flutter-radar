@@ -48,7 +48,7 @@ class ServersPage extends StatelessWidget {
                         itemCount: serversModel.data.length,
                         shrinkWrap: true,
                         itemBuilder: (context ,index ){
-                          return _infoCell(context,serversModel.data[index]);
+                          return _infoCell(context,serversModel.data[serversModel.data.length - index - 1]);
                         }
                       )
                     ],
@@ -72,7 +72,7 @@ class ServersPage extends StatelessWidget {
         color: Colors.white,
         borderRadius: new BorderRadius.circular(ScreenUtil().setSp(20)),
       ),
-      child: Row(
+      child: Column(
         children: <Widget>[
           Text('报警时间：${formatDate(DateTime.parse(servers.serversTime).add(new Duration(hours: 8)), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss])}'),
           Text('报警原因：${servers.serversDescribe}')

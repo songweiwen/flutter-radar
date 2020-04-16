@@ -60,7 +60,7 @@ class SocketNetWorkManager {
         Provide.value<SocketNotifyProvide>(context).sureHeartBest();//此时一定要给心跳重制
     } catch (e) {
       print("连接socket出现异常，e=${e.toString()}");
-      // Provide.value<SocketNotifyProvide>(context).setSocketStatus(3,"",null);
+      // Provide.value<SocketNotifyProvide>(context ).setSocketStatus(3,"",null);
     }
 
   }
@@ -68,7 +68,7 @@ class SocketNetWorkManager {
   /**
    * 解码处理方法
    * 处理服务器发过来的数据，注意，这里要处理粘包，这个data参数不一定是一个完整的包
-   */
+   */ 
   void decodeHandle(newData){
     // cacheDataInt.clear();
     //拼凑当前最新未处理的网络数据
@@ -463,7 +463,14 @@ class SocketNetWorkManager {
 
     Uint8List msgLogin;
     List<int> buffer = [0x28,0x97];
-    List<int> body_buffer = [0x00, 0x11, 0x03, 0x01, 0x13]; 
+    List<int> body_buffer;
+    if (int.parse(str) > 5) {
+      //旧协议
+      body_buffer = [0x00, 0x0B, 0x03, 0x01, 0x13]; 
+    } else {
+      //新协议
+      body_buffer = [0x00, 0x11, 0x03, 0x01, 0x13]; //新协议长度0x11  17
+    }
 
     for (var i = str.length; i < 4; i++) {
       str = '0'+ str;
@@ -479,9 +486,16 @@ class SocketNetWorkManager {
       
       String phoneNumber = prefs.getString('userName') + '0';// 后面补0
       if (phoneNumber.length == 12) {
-        for (int i = 0; i < phoneNumber.length; i+=2) {
-          body_buffer.add(_hexToInt(phoneNumber.substring(i,i+2)));
+
+        if (int.parse(str) > 5) {
+          //旧协议
+        } else {
+          //新协议
+          for (int i = 0; i < phoneNumber.length; i+=2) {
+            body_buffer.add(_hexToInt(phoneNumber.substring(i,i+2)));
+          }
         }
+
         // 对设置的参数进行拼接
         body_buffer.add(_hexToInt(data['hostWarningC']));
         body_buffer.add(_hexToInt(data['hostWarningTotalC']));
