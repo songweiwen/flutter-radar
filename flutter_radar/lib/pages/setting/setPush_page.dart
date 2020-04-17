@@ -58,7 +58,7 @@ class _SetPushListState extends State<SetPushList> {
     getUserPushState({'username':phoneNumber}).then((val){
         var responseData = json.decode(val.toString());
         setState(() {
-          if (responseData['data']['phoneOpen'] == 0) {
+          if (responseData['data']['phoneOpen'] == 0 || responseData['data']['phoneOpen'] == null) {
           _value =false;
         } else _value =true;
 
