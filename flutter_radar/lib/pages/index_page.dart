@@ -110,7 +110,8 @@ class IndexPage extends StatelessWidget {
               Provide.value<CurrentIndexProvide>(context).changeIndex(index);
               if (index == 2) {
                 Provide.value<CurrentIndexProvide>(context).changeHostBadge(false);
-                Provide.value<HostListProvide>(context).getHostList();
+                
+                Provide.value<HostListProvide>(context).getHostList(_checkExhibitionIdWithHost(exhibitionId));
               }
             },
           ),
@@ -126,6 +127,13 @@ class IndexPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  int _checkExhibitionIdWithHost(int eId){
+    var exhibitionId;
+    if (eId <11) exhibitionId = 11;
+    if (eId > 12 && eId <30) exhibitionId = 20;
+    return exhibitionId;
   }
 }
 

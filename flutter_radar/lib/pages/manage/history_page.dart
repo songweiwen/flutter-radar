@@ -2,17 +2,21 @@ import 'dart:typed_data';
 
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_radar/model/main_model.dart';
 import 'package:flutter_radar/model/warning_model.dart';
+import 'package:flutter_radar/provide/mainPage.dart';
 import 'package:flutter_radar/provide/warningManage.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
 
 class HistoryPage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+    Exhibition exhibition = Provide.value<MainPageProvide>(context).exhibition;
     return Scaffold(
       body: FutureBuilder(
-        future: _getWarningManage(context),
+        future: _getWarningManage(context,_checkExhibitionIdWithHost(exhibition.exhibitionId)),
         builder: (context, snapshot){
           List warningList = Provide.value<WarningManageProvide>(context).warningList;
           if (snapshot.hasData && warningList != null) {
@@ -51,8 +55,15 @@ class HistoryPage extends StatelessWidget {
     );
   }
 
-  Future<String> _getWarningManage(BuildContext context) async {
-    await Provide.value<WarningManageProvide>(context).getWarningManageList();
+  int _checkExhibitionIdWithHost(int eId){
+    var exhibitionId;
+    if (eId <11) exhibitionId = 11;
+    if (eId > 12 && eId <30) exhibitionId = 20;
+    return exhibitionId;
+  }
+
+  Future<String> _getWarningManage(BuildContext context , int exhibitionArea) async {
+    await Provide.value<WarningManageProvide>(context).getWarningManageList(exhibitionArea);
     return 'end';
   }
 }
@@ -81,7 +92,7 @@ class WarningCell extends StatelessWidget {
           
           Padding(
             padding: EdgeInsets.only(left: ScreenUtil().setWidth(40) ,top: 5),
-            child: _titleContent(context, '位置：', item.exhibitsRecommend),
+            child: _titleContent(context, '位置：', _checkExhibitsLocationInfo(item)),
           ),
           
           Padding(
@@ -93,8 +104,6 @@ class WarningCell extends StatelessWidget {
             padding: EdgeInsets.only(left: ScreenUtil().setWidth(40) ,top: 5),
             child: _titleContent(context, '文物名称：', item.exhibitsName),
           ),
-          
-
 
           Padding(
             padding: EdgeInsets.only(left: ScreenUtil().setWidth(40) ,top: 5,bottom: 15),
@@ -107,6 +116,37 @@ class WarningCell extends StatelessWidget {
         ],
       ),
     );
+  }
+
+
+
+  String _checkExhibitsLocationInfo(Warning w) {
+    var info;
+    switch (w.exhibitionId) {
+      case 8://紫檀宫西厅
+        info = w.exhibitsRecommend + '   (紫檀宫西厅)'; 
+        break;
+      case 9://紫檀宫中厅
+        info = w.exhibitsRecommend + '   (紫檀宫中厅)'; 
+        break;
+      case 10://紫檀宫东厅
+        info = w.exhibitsRecommend + '   (紫檀宫东厅)'; 
+        break;
+      case 21://兵马俑A坑
+        info = w.exhibitsRecommend + '   (兵马俑A坑)'; 
+        break;
+      case 22://兵马俑B坑
+        info = w.exhibitsRecommend + '   (兵马俑B坑)';
+        break;
+      case 23://兵马俑C坑
+        info = w.exhibitsRecommend + '   (兵马俑C坑)';
+        break;
+      case 24://兵马俑D坑
+        info = w.exhibitsRecommend + '   (兵马俑D坑)';
+        break;
+      default:
+    }
+    return info;
   }
 
   String _getWarningType(Warning item){

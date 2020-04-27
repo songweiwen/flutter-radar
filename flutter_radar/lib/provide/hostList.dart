@@ -13,11 +13,11 @@ class HostListProvide with ChangeNotifier {
   List<Host> hostList = [];
   List<Host> hostListByExhbition = [];
 
-  getHostList() async {
+  getHostList(int exhibitionId) async {
     
     SharedPreferences.getInstance().then((val) async {
       String phoneNumber = val.getString('userName');
-      Map<String, dynamic> d = {'username':phoneNumber};
+      Map<String, dynamic> d = {'username':phoneNumber,'exhibitionId':exhibitionId};
       await getHost(data: d).then((val){
         var responseData = json.decode(val.toString());
         hostModel = HostModel.fromJson(responseData);

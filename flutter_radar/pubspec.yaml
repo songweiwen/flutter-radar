@@ -91,9 +91,14 @@ flutter:
     - images/bg3.jpg
     - images/故宫-文华殿西.jpg
     - images/zhuhaijiegoutu.jpg
+    - images/xianjiegoutu.jpg
     - images/zitangongxiting.jpg
     - images/zitangongdongting.jpg
     - images/zitangongzhongting.jpg
+    - images/bingmayongA.png
+    - images/bingmayongB.png
+    - images/bingmayongC.png
+    - images/bingmayongD.png
     - images/gongbiao.png
     - images/zhanlan.png
     - images/yuanjiao.png

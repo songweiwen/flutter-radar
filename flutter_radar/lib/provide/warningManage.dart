@@ -10,9 +10,9 @@ class WarningManageProvide with ChangeNotifier {
   WarningModel warningModel = new WarningModel();
   List<Warning> warningList = [];
 
-  getWarningManageList() async {
+  getWarningManageList(int exhibitionArea) async {
     // warningList =[];
-    await getWarningMangeContent().then((val){
+    await getWarningMangeContent(exhibitionArea).then((val){
       var responseData = json.decode(val.toString());
       warningModel = WarningModel.fromJson(responseData);
       if (warningList.length ==warningModel.data.length) {

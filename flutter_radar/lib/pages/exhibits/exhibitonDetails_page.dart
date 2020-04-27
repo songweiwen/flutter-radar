@@ -259,20 +259,45 @@ class MakeMapPage extends StatefulWidget {
 
 class _MakeMapPageState extends State<MakeMapPage> {
 
-  // String imageNameStr;
   int exhibitionId;
 
   _MakeMapPageState(this.exhibitionId);
-
-  // int _genId;
-  // PinList _pins = Provide.value<SocketNotifyProvide>(context).pinList;
 
   String endImageStr;
 
   @override
   void initState() {
-    endImageStr = exhibitionId == 8 ? 'images/zitangongxiting.jpg':exhibitionId == 9 ? 'images/zitangongzhongting.jpg':'images/zitangongdongting.jpg';
+    endImageStr = _checkExhibitionIdWithMap(exhibitionId);
     super.initState();
+  }
+
+  String _checkExhibitionIdWithMap(int e){
+    var mapString;
+    switch (e) {
+      case 8:
+        mapString = 'images/zitangongxiting.jpg';
+        break;
+      case 9:
+        mapString = 'images/zitangongzhongting.jpg';
+        break;
+      case 10:
+        mapString = 'images/zitangongdongting.jpg';
+        break;
+      case 21:
+        mapString = 'images/bingmayongA.png';
+        break;
+      case 22:
+        mapString = 'images/bingmayongB.png';
+        break;
+      case 23:
+        mapString = 'images/bingmayongC.png';
+        break;
+      case 24:
+        mapString = 'images/bingmayongD.png';
+        break;
+      default:
+    }
+    return mapString;
   }
 
   @override

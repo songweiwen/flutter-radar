@@ -483,18 +483,52 @@ class SwiperDiy extends StatelessWidget{
           return InkWell(
             onTap: (){
                   SharedPreferences.getInstance().then((val){
-                    if(val.getString('userName')!=null) {
+                    if(val.getString('userName')!= null ) {
                       _getExhibitionInfoByAreaName(context, swiperDataList[index]);
-                      Exhibition exhibition = Provide.value<MainPageProvide>(context).exhibition;
-                      if (exhibition.exhibitionAreaName != null && exhibition.exhibitionAreaName.length >0) {
-                        Application.router.navigateTo(context, "/index?id=${exhibition.exhibitionId}");
+                      //检查用户相应权限
+                      int userAdmin =  val.getInt('admin');
+                      if (userAdmin != null || userAdmin == 0) {
+                        Exhibition exhibition = Provide.value<MainPageProvide>(context).exhibition;
+                        switch (userAdmin) {
+                          case 1:// 最高权限
+                            _selectExhibition(exhibition,context);
+                            break;
+                          case 2:// 故宫权限
+                            _selectExhibition(exhibition,context);
+                            break;
+                          case 11:// 珠海权限
+                            if (exhibition.exhibitionAreaName == '珠海紫檀宫') {
+                              _selectExhibition(exhibition,context);
+                            } else {
+                              Fluttertoast.showToast(
+                                msg: "您并非该区域管理员。",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                              );
+                            }
+                            break;
+                          case 20:// 西安权限
+                            if (exhibition.exhibitionAreaName == '西安兵马俑') {
+                              _selectExhibition(exhibition,context);
+                            } else {
+                              Fluttertoast.showToast(
+                                msg: "您并非该区域管理员。",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                              );
+                            }
+                            break;
+                          default:
+                        }
                       } else {
-                          Fluttertoast.showToast(
-                            msg: "该区域未获权限。",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                          );
-                      }
+                        // 让用户重新登陆
+                        Fluttertoast.showToast(
+                          msg: "版本更新，请重新登陆!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                        );
+                        Application.router.navigateTo(context, "/login");
+                        }
                     } else {
                       Fluttertoast.showToast(
                         msg: "尚未登陆，请登陆!",
@@ -502,7 +536,7 @@ class SwiperDiy extends StatelessWidget{
                         gravity: ToastGravity.CENTER,
                       );
                       Application.router.navigateTo(context, "/login");
-                          }
+                    }
                   });
             
             },
@@ -536,6 +570,18 @@ class SwiperDiy extends StatelessWidget{
         scale: 0.5,
       ),
     );
+  }
+
+  void _selectExhibition(Exhibition exhibition ,BuildContext context){
+    if (exhibition.exhibitionAreaName != null && exhibition.exhibitionAreaName.length >0) {
+      Application.router.navigateTo(context, "/index?id=${exhibition.exhibitionId}");
+    } else {
+      Fluttertoast.showToast(
+        msg: "该区域未获权限。",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
+    }
   }
 
   Future<String> _getExhibitionInfoByAreaName(BuildContext context , String areaName) async {

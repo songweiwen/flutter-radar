@@ -48,14 +48,14 @@ Future getMainPageContent() async{
 }
 
 //获取报警记录 信息方法
-Future getWarningMangeContent() async {
+Future getWarningMangeContent(int exhibitionArea) async {
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var name = prefs.get('userName');
     Response response;
     Dio dio = new Dio();
     dio.options.responseType = ResponseType.plain;
-    response = await dio.get(servicePath['warningManagePage'],queryParameters: {'username':name});
+    response = await dio.get(servicePath['warningManagePage'],queryParameters: {'username':name, 'exhibitionArea': exhibitionArea});
     if(response.statusCode==200){
       return response.data;
     }else{

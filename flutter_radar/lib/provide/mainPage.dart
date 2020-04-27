@@ -139,18 +139,20 @@ class MainPageProvide with ChangeNotifier {
       String phoneNumber = val.getString('userName');
       Map<String, dynamic> d = {'exhibitsArea':data['exhibitsArea'],'username':phoneNumber};
       await getRFIDByExhibition(data: d).then((val){
-        var responseData = json.decode(val.toString());
-        exhibitsModel = ExhibitsModel.fromJson(responseData);
-        if (allExhibitsList.length == exhibitsModel.data.length) {
-          
-        } else {
-          allExhibitsList = [];
-          // 筛选数据
-          for (Exhibits element in exhibitsModel.data) {
+        if(val != null) {
+          var responseData = json.decode(val.toString());
+          exhibitsModel = ExhibitsModel.fromJson(responseData);
+          if (allExhibitsList.length == exhibitsModel.data.length) {
+            
+          } else {
+            allExhibitsList = [];
+            // 筛选数据
+            for (Exhibits element in exhibitsModel.data) {
 
-              allExhibitsList.add(element);
+                allExhibitsList.add(element);
+            }
+            notifyListeners();
           }
-          notifyListeners();
         }
       });
     });

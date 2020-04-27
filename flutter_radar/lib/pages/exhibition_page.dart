@@ -32,7 +32,7 @@ class ExhibitionPage extends StatelessWidget {
         // 展厅的结构图
         Positioned( top: ScreenUtil().setHeight(10), right: 0, left: 0, bottom: ScreenUtil().setHeight(app_height -(app_height - app_width)),
           child: ExtendedImage.asset(
-            'images/zhuhaijiegoutu.jpg',
+            _selectExhibitionImage(exhibition),
             fit: BoxFit.contain,
             mode: ExtendedImageMode.gesture,
             initGestureConfigHandler: (state) {
@@ -150,6 +150,20 @@ class ExhibitionPage extends StatelessWidget {
       ],
 
     );
+  }
+
+  String _selectExhibitionImage(Exhibition e) {
+    var imageNamed;
+    switch (e.areaName) {
+      case '珠海':
+        imageNamed = 'images/zhuhaijiegoutu.jpg';
+        break;
+      case '西安':
+        imageNamed = 'images/xianjiegoutu.jpg';
+        break;
+      default:
+    }
+    return imageNamed;
   }
 
 

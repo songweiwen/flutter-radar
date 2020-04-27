@@ -2,7 +2,9 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radar/config/appSetting.dart';
 import 'package:flutter_radar/model/host_model.dart';
+import 'package:flutter_radar/model/main_model.dart';
 import 'package:flutter_radar/provide/hostList.dart';
+import 'package:flutter_radar/provide/mainPage.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provide/provide.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,11 +15,11 @@ class HostPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    Exhibition exhibition = Provide.value<MainPageProvide>(context).exhibition;
     return Scaffold(
 
       body: FutureBuilder(
-        future: _gethostList(context),
+        future: _gethostList(context,exhibition),
         builder: (context, snapshot){
           List<Host> warningList = Provide.value<HostListProvide>(context).hostList;
           if (snapshot.hasData && warningList != null) {
@@ -58,9 +60,16 @@ class HostPage extends StatelessWidget {
     );
   }
 
-  Future<String> _gethostList(BuildContext context) async {
-    await Provide.value<HostListProvide>(context).getHostList();
+  Future<String> _gethostList(BuildContext context, Exhibition exhibition) async {
+    await Provide.value<HostListProvide>(context).getHostList(_checkExhibitionIdWithHost(exhibition.exhibitionId));
     return 'end';
+  }
+
+int _checkExhibitionIdWithHost(int eId){
+    var exhibitionId;
+    if (eId <11) exhibitionId = 11;
+    if (eId > 12 && eId <30) exhibitionId = 20;
+    return exhibitionId;
   }
 
   Widget _infoCell(context , Host item) {
