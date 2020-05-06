@@ -18,8 +18,8 @@ class HistoryPage extends StatelessWidget {
       body: FutureBuilder(
         future: _getWarningManage(context,_checkExhibitionIdWithHost(exhibition.exhibitionId)),
         builder: (context, snapshot){
-          List warningList = Provide.value<WarningManageProvide>(context).warningList;
-          if (snapshot.hasData && warningList != null) {
+          // List warningList = Provide.value<WarningManageProvide>(context).warningList;
+          if (snapshot.hasData ) {
 
             return Container(
               decoration: BoxDecoration(
@@ -34,7 +34,7 @@ class HistoryPage extends StatelessWidget {
 
                     Provide<WarningManageProvide>(
                       builder: (context,child,childCategory){
-                        warningList = Provide.value<WarningManageProvide>(context).warningList;
+                        List warningList = Provide.value<WarningManageProvide>(context).warningList;
                         return ListView.builder(
                           itemCount: warningList.length,
                           itemBuilder: (context,index){

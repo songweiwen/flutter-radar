@@ -179,6 +179,7 @@ class ExhibitionDetailsPage extends StatelessWidget {
           // 文物图片
           Positioned( right:  10, top: ScreenUtil().setHeight(50),
             child: CachedNetworkImage(
+              width: ScreenUtil().setWidth(200),
               imageUrl: "${item.exhibitsImg}",
               placeholder: (context, url) => CircularProgressIndicator(),
               errorWidget: (context, url, error) => Icon(Icons.error),
