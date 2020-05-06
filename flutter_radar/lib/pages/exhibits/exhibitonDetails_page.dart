@@ -129,7 +129,7 @@ class ExhibitionDetailsPage extends StatelessWidget {
 
               Padding(
                 padding: EdgeInsets.only(left: ScreenUtil().setWidth(40) ,top: 10),
-                child: _titleContent(context, '文物号：', item.exhibitsId),
+                child: _titleContent(context, '危化品编号：', item.exhibitsId),
               ),
               
               Padding(

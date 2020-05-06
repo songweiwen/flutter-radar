@@ -97,12 +97,12 @@ class WarningCell extends StatelessWidget {
           
           Padding(
             padding: EdgeInsets.only(left: ScreenUtil().setWidth(40) ,top: 5),
-            child: _titleContent(context, '文物编号：', item.exhibitsId),
+            child: _titleContent(context, '危化品编号：', item.exhibitsId),
           ),
 
           Padding(
             padding: EdgeInsets.only(left: ScreenUtil().setWidth(40) ,top: 5),
-            child: _titleContent(context, '文物名称：', item.exhibitsName),
+            child: _titleContent(context, '危化品名称：', item.exhibitsName),
           ),
 
           Padding(

@@ -227,15 +227,15 @@ class _MainPageState extends State<MainPage> {
                               //app 标题
                               AppTitle(),
                               //app 宫标
-                              Padding(
-                                child: Image(
-                                  image: AssetImage('images/gongbiao.png'),
-                                  fit:BoxFit.fill,
-                                  height: ScreenUtil().setHeight(455),
-                                  width: ScreenUtil().setWidth(356),
-                                ),
-                                padding: new EdgeInsets.only(top: ScreenUtil().setHeight(160)),
-                              ),
+                              // Padding(
+                              //   child: Image(
+                              //     image: AssetImage('images/gongbiao.png'),
+                              //     fit:BoxFit.fill,
+                              //     height: ScreenUtil().setHeight(455),
+                              //     width: ScreenUtil().setWidth(356),
+                              //   ),
+                              //   padding: new EdgeInsets.only(top: ScreenUtil().setHeight(160)),
+                              // ),
                               //轮播图组件
                               SwiperDiy(swiperDataList: swiperDataList,userName: userName,),
                               ],
@@ -451,9 +451,10 @@ class AppTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: ScreenUtil().setHeight(220)),
+      margin: EdgeInsets.only(top: ScreenUtil().setHeight(520)),
       child: Text(
-          base_title, 
+          // base_title, 
+          '可移动危化品全时监控系统',
           style: TextStyle(
             fontSize: ScreenUtil().setSp(50), 
             color: base_titleColor
@@ -508,7 +509,7 @@ class SwiperDiy extends StatelessWidget{
                             }
                             break;
                           case 20:// 西安权限
-                            if (exhibition.exhibitionAreaName == '西安兵马俑') {
+                            if (exhibition.exhibitionAreaName == '西安危化品') {
                               _selectExhibition(exhibition,context);
                             } else {
                               Fluttertoast.showToast(
@@ -554,7 +555,8 @@ class SwiperDiy extends StatelessWidget{
                   width: ScreenUtil().setWidth(445),
                 ),
                 Text(
-                  '${swiperDataList[index]}',
+                  // '${swiperDataList[index]}',
+                  '',
                   style: TextStyle(
                     fontSize: ScreenUtil().setSp(45),
                   ),
