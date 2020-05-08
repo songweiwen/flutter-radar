@@ -133,16 +133,16 @@ class WarningCell extends StatelessWidget {
         info = w.exhibitsRecommend + '   (紫檀宫东厅)'; 
         break;
       case 21://兵马俑A坑
-        info = w.exhibitsRecommend + '   (兵马俑A坑)'; 
+        info = w.exhibitsRecommend + '   (区域1)'; 
         break;
       case 22://兵马俑B坑
-        info = w.exhibitsRecommend + '   (兵马俑B坑)';
+        info = w.exhibitsRecommend + '   (区域2)';
         break;
       case 23://兵马俑C坑
-        info = w.exhibitsRecommend + '   (兵马俑C坑)';
+        info = w.exhibitsRecommend + '   (区域3)';
         break;
       case 24://兵马俑D坑
-        info = w.exhibitsRecommend + '   (兵马俑D坑)';
+        info = w.exhibitsRecommend + '   (区域4)';
         break;
       default:
     }

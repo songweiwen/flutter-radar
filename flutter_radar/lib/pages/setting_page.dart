@@ -50,7 +50,8 @@ class SettingSubTitle extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: ScreenUtil().setHeight(106)),
       child: Text(
-        base_title,
+        // base_title, 
+        '可移动危化品全时监控系统',
         style: TextStyle(
           fontSize: ScreenUtil().setSp(34),
           color: base_titleColor
