@@ -378,6 +378,7 @@ class _MainPageState extends State<MainPage> {
                   }
                   break;
                 case 3:
+                
                   if (Provide.value<SocketNotifyProvide>(context).server_HeartBest >= 3) {
                     //重新建立连接之前。需要抛弃上一个对象
                     // networkManager.socket = null;
@@ -399,7 +400,9 @@ class _MainPageState extends State<MainPage> {
                 // 退出登陆之后要将socket挂起
                 case 99:
                   print('用户退出登陆');
-                  networkManager.doneHandler();
+                  if (networkManager != null) {
+                    networkManager.doneHandler();
+                  }
                   break;
                 default:
               }

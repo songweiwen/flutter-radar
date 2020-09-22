@@ -2,14 +2,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 
-const String app_version = 'V1.0.2';
+const String app_version = 'V1.0.3';
 
 //app布局定义 UI参考 iPhoneX
 const double app_width = 750;
 const double app_height = 1624;
 //app主标题名称
 const String base_title = '外借临展文物防护系统';
-//app主标题颜色
+//app主标题颜色  
 const Color base_titleColor = Colors.black;
 
 

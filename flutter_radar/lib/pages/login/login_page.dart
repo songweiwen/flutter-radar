@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // 登陆成功后需要对socket进行连接处理
         Provide.value<SocketNotifyProvide>(context).setSocketStatus(3, '',null);
-
+        Provide.value<SocketNotifyProvide>(context).server_HeartBest =3; //给心跳的标示增加到3  因为刚重新登录 所以重新建立tcp连接
         Navigator.pop(context);
         
       } else {

@@ -1,7 +1,7 @@
 
-const serviceUrl = 'https://www.dynercomm-radar.com:8443/';
+const serviceUrl = 'http://www.dynercomm-radar.com:5000/';
 
-const socketUrl = 'www.dynercomm-radar.com';
+const socketUrl = '39.105.81.161';
 // const socketUrl = '192.168.100.105';
 
 const servicePath ={
@@ -19,4 +19,4 @@ const servicePath ={
   'checkPush' : serviceUrl + 'login/checkpush', // 检查用户 推送设置状态
   'setJpush' : serviceUrl + 'login/setJpush',// 设置极光推送
   'checkServers': serviceUrl + 'login/checkservers',// 查询服务器状态
-};
+}; 

@@ -264,6 +264,7 @@ class Crc16 {
   /// CRC计算
   static int calcCrc16(Uint8List list, int len) {
     Uint32List crc = Uint32List(1);
+    print('crc:$crc');
     Uint8List da = Uint8List(1);
     for (int i = 0; i < len; i++) {
       da[0] = (crc[0] ~/ 256).toUnsigned(8);
