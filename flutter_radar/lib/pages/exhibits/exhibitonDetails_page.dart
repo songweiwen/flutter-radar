@@ -79,12 +79,32 @@ class ExhibitionDetailsPage extends StatelessWidget {
                   return Provide<SocketNotifyProvide>(
                           builder: (context,child,val){
                             rfidlist = Provide.value<SocketNotifyProvide>(context).warningListByExhibition;
-                            return ListView.builder(
-                              itemCount: rfidlist.length,
-                              itemBuilder: (context, index){
-                                return _infoCell(context, rfidlist[index], index);
-                              },
-                            );
+                            if (rfidlist.length == 0) {
+                              return  Container( // 这里是增加 没有报警时  对缩放地图进行遮挡的蒙版。
+                                constraints: BoxConstraints( // 让控件填充整个下半部分
+                                  minWidth: double.infinity,
+                                  minHeight: double.infinity
+                                ),
+                                margin: EdgeInsets.fromLTRB(ScreenUtil().setWidth(0),.0, ScreenUtil().setWidth(0), .0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,  
+                                ),
+                                child: Text(
+                                  '该区域暂无新增报警。',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: ScreenUtil().setSp(50),
+                                  ),
+                                ),
+                              );
+                            } else { // 从这里开始是对该展厅 报警的文物列表 加载
+                               return ListView.builder(
+                                itemCount: rfidlist.length,
+                                itemBuilder: (context, index){
+                                  return _infoCell(context, rfidlist[index], index);
+                                },
+                              );
+                            }
                           },
                         );
                 } else {
@@ -101,11 +121,11 @@ class ExhibitionDetailsPage extends StatelessWidget {
 
   Widget _infoCell(context , Exhibits item, int index) {
       return Container(
-      margin: EdgeInsets.fromLTRB(ScreenUtil().setWidth(30), 5.0, ScreenUtil().setWidth(30), 5.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: new BorderRadius.circular(ScreenUtil().setSp(20)),
-      ),
+        margin: EdgeInsets.fromLTRB(ScreenUtil().setWidth(0),.0, ScreenUtil().setWidth(0), .0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: new BorderRadius.circular(ScreenUtil().setSp(0)),
+        ),
 
       child: Stack(
         children: <Widget>[
@@ -113,16 +133,16 @@ class ExhibitionDetailsPage extends StatelessWidget {
           Column(
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(left: ScreenUtil().setWidth(40) ,top: 5 ,),
+                padding: EdgeInsets.only(left: ScreenUtil().setWidth(0) ,top: 5 ,),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.lightGreen,
                     border: Border(
                       bottom: BorderSide(width: 0,color: Colors.black12)
                     )
                   ),
                   child: Center(
-                    child: Text('${ontapCount - index}'),
+                    child: Text('${ontapCount - index}',),
                   ),
                 ),
               ),

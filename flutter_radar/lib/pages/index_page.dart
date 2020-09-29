@@ -16,7 +16,7 @@ class IndexPage extends StatelessWidget {
   final int exhibitionId;
   IndexPage(this.exhibitionId);
 
-  // 导航tables
+  // 导航tablesy
   final List<BottomNavigationBarItem> bottomTabs = [
     BottomNavigationBarItem(
       icon: Image(image: AssetImage("images/zhanlan.png"),
