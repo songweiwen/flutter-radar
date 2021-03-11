@@ -7,6 +7,7 @@ import 'package:flutter_radar/model/exhibits_model.dart';
 import 'package:flutter_radar/model/main_model.dart';
 import 'package:flutter_radar/provide/mainPage.dart';
 import 'package:flutter_radar/provide/socketNotify.dart';
+import 'package:flutter_radar/provide/warningManage.dart';
 import 'package:flutter_radar/routers/application.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -25,6 +26,7 @@ class ExhibitionPage extends StatelessWidget {
     Exhibition exhibition = Provide.value<MainPageProvide>(context).exhibition;
     List<Exhibition> areaNameList =Provide.value<MainPageProvide>(context).areaNameList;
     Provide.value<MainPageProvide>(context).getAllRFIDByExhibition({'exhibitsArea':exhibition.exhibitionAreaName });
+    // Provide.value<WarningManageProvide>(context).getWarningManageList(exhibition.exhibitionId);
     Provide.value<SocketNotifyProvide>(context).setWarningListByAll(context);
 
     return Stack(
@@ -137,9 +139,10 @@ class ExhibitionPage extends StatelessWidget {
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.CENTER,
                     );
-                    // Provide.value<WarningManageProvide>(context).getWarningManageList();
+
+                    Provide.value<WarningManageProvide>(context).getWarningManageList(exhibition.exhibitionId);
                     Provide.value<SocketNotifyProvide>(context).setWarningListByAll(context);
-                    
+                    Provide.value<SocketNotifyProvide>(context).selecPinByExhibition(exhibition.exhibitionId);
                   },
                 ),
               )
@@ -172,7 +175,7 @@ class ExhibitionPage extends StatelessWidget {
       padding: EdgeInsets.only(top: ScreenUtil().setHeight(50)),
       width: ScreenUtil().setWidth(app_width /3),
       height: ScreenUtil().setHeight(120),
-      child: Provide<SocketNotifyProvide>(
+      child: Provide<SocketNotifyProvide>( 
         builder: (context,child,val){
           warningCount = [];
           warningCount = Provide.value<SocketNotifyProvide>(context).warningListByRFID;

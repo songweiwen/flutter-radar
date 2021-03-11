@@ -11,7 +11,11 @@ class WarningManageProvide with ChangeNotifier {
   List<Warning> warningList = [];
 
   getWarningManageList(int exhibitionArea) async {
-    // warningList =[];
+
+    if(exhibitionArea == null || exhibitionArea < 11) {
+      exhibitionArea = 11;
+    }  
+
     await getWarningMangeContent(exhibitionArea).then((val){
       var responseData = json.decode(val.toString());
       warningModel = WarningModel.fromJson(responseData);
@@ -31,6 +35,7 @@ class WarningManageProvide with ChangeNotifier {
       }
       notifyListeners();
     });
+
   }
 
 

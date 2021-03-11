@@ -1,11 +1,13 @@
 
-const serviceUrl = 'http://www.dynercomm-radar.com:5000/';
+// const serviceUrl = 'http://www.dynercomm-radar.com:5000/';
+// const serviceUrl = 'http://songweiwenceshi.oicp.io:53575/';
+const serviceUrl = 'http://192.168.1.102:5000/';
 
-const socketUrl = '39.105.81.161';
-// const socketUrl = '192.168.100.105';
+// const socketUrl = '39.105.81.161';
+const socketUrl = '192.168.1.102';
 
 const servicePath ={
-  'mainPage': serviceUrl+'main',//main 获取所有展馆信息
+  'mainPage': serviceUrl+'main',//main 获取所有展 馆信息
   'warningManagePage' : serviceUrl+'warning',//warning 获取所有报警信息
   'exhibitsPage': serviceUrl + 'main/exhibts',// exhibts 获取所有展品信息
   'loginPage': serviceUrl + 'login', // 登录账号

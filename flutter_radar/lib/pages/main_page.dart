@@ -80,9 +80,6 @@ class _MainPageState extends State<MainPage> {
           // String content = json['content'].toString();
           if (json['content'] != null ) {
             Provide.value<SocketNotifyProvide>(context).setJpushContentCheck( json['content'].toString(), context,json['time']);
-            // 
-            // Provide.value<WarningManageProvide>(context).getWarningManageList();
-            // Provide.value<SocketNotifyProvide>(context).setWarningListByAll(context);
             /////严重bug/////
             // Provide.value<MainPageProvide>(context).getAllRFIDByExhibition({'exhibitsArea':'珠海紫檀宫'});
           }

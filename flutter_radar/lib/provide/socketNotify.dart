@@ -5,11 +5,13 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_radar/model/exhibits_model.dart';
 import 'package:flutter_radar/model/host_model.dart';
+import 'package:flutter_radar/model/main_model.dart';
 import 'package:flutter_radar/model/warning_model.dart';
 import 'package:flutter_radar/pages/pin/pin.dart';
 import 'package:flutter_radar/provide/hostList.dart';
 import 'package:flutter_radar/provide/mainPage.dart';
 import 'package:flutter_radar/provide/warningManage.dart';
+import 'package:flutter_radar/service/service_method.dart';
 import 'package:provide/provide.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -216,8 +218,10 @@ class SocketNotifyProvide with ChangeNotifier{
 
   // 给 rfid 报警的 list增加至列表
   setWarningListByRFID( BuildContext context) {
+    Exhibition exhibition = Provide.value<MainPageProvide>(context).exhibition;
 
-    List<Exhibits> exhibitsList = Provide.value<MainPageProvide>(context).allExhibitsList;
+    // 这里增加更新报警列表。   网络请求查询。。
+   List<Exhibits> exhibitsList = Provide.value<MainPageProvide>(context).allExhibitsList;
     for (RFIDSocketModel item in rfidList) {
       for (Exhibits e in exhibitsList) {
         if (item.rfidId == e.rfidId) {
@@ -231,91 +235,116 @@ class SocketNotifyProvide with ChangeNotifier{
         }
       }
     }
-    // Provide.value<SocketNotifyProvide>(context).setWarningListByAll(context);
-    notifyListeners();
+      setWarningListByAll(context);
+    // notifyListeners();
+    // 原先这里从通知收到的报警记录不会主动变色和显示状态。    改为内部调用 setWaringListByAll方法  在缓存过多的时候仍然会导致程序卡顿
+
   }
 
   // 从报警记录中获取所有的报警 并显示到状态
   setWarningListByAll(BuildContext context) async {
-    List warningList = Provide.value<WarningManageProvide>(context).warningList;
-    List<Exhibits> exhibitsList = Provide.value<MainPageProvide>(context).allExhibitsList;
-    warningListByRFID = [];
 
-    List<Exhibits> tempList = [];
+  WarningModel warningModel = new WarningModel();
+  List<Warning> warningList = [];
 
-    // warningListByRFID 所有的报警记录拿完后   和本地持久化存储的数据（已确认过的） 做对比
-    //获取本地持久化的数据  是已确认过的报警
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> sureWarningList =  prefs.getStringList('SureWarningList');
-    List<Exhibits> sureExhibits = [];
-    if (sureWarningList != null) {
-      for (var strCode in sureWarningList) {
-        Exhibits e = new Exhibits();
-        var json = jsonDecode(strCode);
-        e.exhibitsId = json['exhibitsId'];
-        e.rfidId = int.parse(json['rfidId']);
-        e.timeStr = json['timeStr'];
-        sureExhibits.add(e);
-      }
-    }
-    for(Warning item in warningList) {
-      for (Exhibits e in exhibitsList) {
-        if (item.rfidId == e.rfidId) { // 如果报警的标签存在于  展馆的标签内
-          //先对这个新属性进行一次赋值   
-          Exhibits exhibits = _getExhibitsModel(e);
-          // exhibits = 
-          exhibits.timeStr = item.beginTime;
-          if (item.comment.length > 0) {
-            exhibits.warningType = '失联报警';
-          }  else{
-            String typeStr = item.type.substring(item.type.length -2, item.type.length);
-            Uint8List u = Uint8List.fromList([_hexToInt(typeStr)]);
-            if ( u[0]&0x4F == 0x4F) {
-              exhibits.warningType = '移动报警';
-            } 
-            if ( u[0]&0x80 == 0x80) {
-              exhibits.warningType = exhibits.warningType + ',欠电报警';
-            } 
-            if (item.comment == '失联') {
-              exhibits.warningType = '失联报警';
-            }
+  getWarningMangeContent(11).then((val) async {
+      var responseData = json.decode(val.toString());
+      warningModel = WarningModel.fromJson(responseData);
+      if (warningList.length ==warningModel.data.length) {
+        // warningList=[];
+      } else {
+        warningList=[];
+        if (warningModel.data.length >0) {
+          
+          for(int i=warningModel.data.length-1;i>=0;i--){
+            warningList.add(warningModel.data[i]);
           }
 
-          tempList.add(exhibits);
-          continue;
-        }
-      }
-    }
-    int f = 0;
-    for (var i = 0; i < tempList.length; i++) {
-      if (sureExhibits.length== 0) {
-        warningListByRFID.add(tempList[i]);
-      }
-      f = 0;
-      for (var j = 0; j < sureExhibits.length; j++) {
-          if (((tempList[i].timeStr == sureExhibits[j].timeStr) ||
-           (formatDate(DateTime.parse(tempList[i].timeStr).add(new Duration(hours: 8)), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]) == sureExhibits[j].timeStr)||
-           (formatDate(DateTime.parse(formatDate(DateTime.parse(tempList[i].timeStr).subtract(new Duration(seconds: 1)), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss])).add(new Duration(hours: 8)), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]) == sureExhibits[j].timeStr)) 
-          &&
-          (tempList[i].rfidId == sureExhibits[j].rfidId) &&
-          (tempList[i].exhibitsId == sureExhibits[j].exhibitsId)) { //如果报警的标签  各项属性都符合在本地已确认的报警标签内
-          // 是已确认过的报警  不作任何处理
-          f = 1;
-          break;
         } else {
-          // 未确认过的报警
-          f= 0;
+          warningList=[];
         }
       }
-      if ( f == 0) {
-      warningListByRFID.add(tempList[i]);
-      }
-    }
 
-    //修改 增加rfid   将所有已存在报警的地方生成pin
-    createPinByWarningList(warningListByRFID);
+    // 确认报警消息最新后
+        List<Exhibits> exhibitsList = Provide.value<MainPageProvide>(context).allExhibitsList;
+        warningListByRFID = [];
+
+        List<Exhibits> tempList = [];
+
+        // warningListByRFID 所有的报警记录拿完后   和本地持久化存储的数据（已确认过的） 做对比
+        //获取本地持久化的数据  是已确认过的报警
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        List<String> sureWarningList =  prefs.getStringList('SureWarningList');
+        List<Exhibits> sureExhibits = [];
+        if (sureWarningList != null) {
+          for (var strCode in sureWarningList) {
+            Exhibits e = new Exhibits();
+            var json = jsonDecode(strCode);
+            e.exhibitsId = json['exhibitsId'];
+            e.rfidId = int.parse(json['rfidId']);
+            e.timeStr = json['timeStr'];
+            sureExhibits.add(e);
+          }
+        }
+        for(Warning item in warningList) {
+          for (Exhibits e in exhibitsList) {
+            if (item.rfidId == e.rfidId) { // 如果报警的标签存在于  展馆的标签内
+              //先对这个新属性进行一次赋值   
+              Exhibits exhibits = _getExhibitsModel(e);
+              // exhibits = 
+              exhibits.timeStr = item.beginTime;
+              if (item.comment.length > 0) {
+                exhibits.warningType = '失联报警';
+              }  else{
+                String typeStr = item.type.substring(item.type.length -2, item.type.length);
+                Uint8List u = Uint8List.fromList([_hexToInt(typeStr)]);
+                if ( u[0]&0x4F == 0x4F) {
+                  exhibits.warningType = '移动报警';
+                } 
+                if ( u[0]&0x80 == 0x80) {
+                  exhibits.warningType = exhibits.warningType + ',欠电报警';
+                } 
+                if (item.comment == '失联') {
+                  exhibits.warningType = '失联报警';
+                }
+              }
+
+              tempList.add(exhibits);
+              continue;
+            }
+          }
+        }
+        int f = 0;
+        for (var i = 0; i < tempList.length; i++) {
+          if (sureExhibits.length== 0) {
+            warningListByRFID.add(tempList[i]);
+          }
+          f = 0;
+          for (var j = 0; j < sureExhibits.length; j++) {
+              if (((tempList[i].timeStr == sureExhibits[j].timeStr) ||
+              (formatDate(DateTime.parse(tempList[i].timeStr).add(new Duration(hours: 8)), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]) == sureExhibits[j].timeStr)||
+              (formatDate(DateTime.parse(formatDate(DateTime.parse(tempList[i].timeStr).subtract(new Duration(seconds: 1)), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss])).add(new Duration(hours: 8)), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]) == sureExhibits[j].timeStr)) 
+              &&
+              (tempList[i].rfidId == sureExhibits[j].rfidId) &&
+              (tempList[i].exhibitsId == sureExhibits[j].exhibitsId)) { //如果报警的标签  各项属性都符合在本地已确认的报警标签内
+              // 是已确认过的报警  不作任何处理
+              f = 1;
+              break;
+            } else {
+              // 未确认过的报警
+              f= 0;
+            }
+          }
+          if ( f == 0) {
+          warningListByRFID.add(tempList[i]);
+          }
+        }
+
+        //修改 增加rfid   将所有已存在报警的地方生成pin
+        createPinByWarningList(warningListByRFID);
+
+    });
     
-    notifyListeners();
   }
 
 

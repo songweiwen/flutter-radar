@@ -32,7 +32,7 @@ class ExhibitsListProvide with ChangeNotifier {
         } else {
           exhibitsList=[];
         }
-        notifyListeners();
+        notifyListeners(); 
       }
       
     });
